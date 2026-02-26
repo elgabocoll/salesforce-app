@@ -9,7 +9,7 @@ salesforce-app/
 ├── netlify.toml                  ← Config de Netlify
 └── netlify/
     └── functions/
-        └── salesforce.js         ← Backend (puente con SF)
+        └── salesforce.mjs        ← Backend (puente con SF)
 ```
 
 ---
@@ -36,7 +36,7 @@ Tienes dos opciones:
 #### Opción A — Desde la web de GitHub (más fácil):
 1. En tu repositorio vacío, haz clic en **"uploading an existing file"**
 2. Arrastra TODOS los archivos y carpetas de este proyecto
-3. ⚠️ Asegúrate de subir también la carpeta `netlify/functions/salesforce.js`
+3. ⚠️ Asegúrate de subir también la carpeta `netlify/functions/salesforce.mjs`
 4. Haz clic en **"Commit changes"**
 
 #### Opción B — Con Git (terminal):
@@ -111,4 +111,4 @@ Cada vez que hagas cambios y los subas a GitHub, Netlify los desplegará **autom
 
 **"No se pudo conectar"** → Verifica que SF_LOGIN_URL sea correcto (producción vs sandbox)
 
-**La función no aparece** → Asegúrate de que el archivo esté en `netlify/functions/salesforce.js`
+**La función no aparece** → Asegúrate de que el archivo esté en `netlify/functions/salesforce.mjs`
