@@ -751,20 +751,33 @@ function renderDashboard() {
 // ═══════════════════════════════════════════════════════════
 // RENDER: PERSONAL SOCIOS
 // ═══════════════════════════════════════════════════════════
-function renderPersonalSocios() {
-  // TODO: const data = await API.getSocios()
-  sociosFiltrados = [...MOCK.socios]
+async function renderPersonalSocios() {
+  const tbody = document.getElementById('tbodySocios')
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-2)">Cargando...</td></tr>'
+
+  const res = await fetch('/.netlify/functions/salesforce', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'query', tipo: 'contactos' })
+  })
+  const data = await res.json()
+
+  if (data.error) {
+    tbody.innerHTML = `<tr><td colspan="5" style="color:var(--danger);padding:1rem">${data.error}</td></tr>`
+    return
+  }
+
+  sociosFiltrados = data.records || []
   renderTablaSocios()
 }
 
 function renderTablaSocios() {
   document.getElementById('tbodySocios').innerHTML = sociosFiltrados.map(s => `
     <tr>
-      <td><strong>${s.nombre}</strong></td>
-      <td style="color:var(--text-2)">${s.email}</td>
-      <td style="font-family:var(--mono);font-size:.8rem">${s.telefono}</td>
-      <td><span class="badge badge-blue">${s.membresia}</span></td>
-      <td>${s.estado === 'Activo'
+      <td><strong>${s.Name || '—'}</strong></td>
+      <td style="color:var(--text-2)">${s.Email || '—'}</td>
+      <td><span class="badge badge-blue">${s.Membresia || '—'}</span></td>
+      <td>${s.Status === 'Active'
         ? '<span class="badge badge-green">Activo</span>'
         : '<span class="badge badge-gray">Inactivo</span>'}</td>
       <td><button class="btn btn-ghost btn-sm">Editar</button></td>
@@ -774,7 +787,7 @@ function renderTablaSocios() {
 function filtrarSocios(q) {
   const ql = q.toLowerCase()
   sociosFiltrados = MOCK.socios.filter(s =>
-    s.nombre.toLowerCase().includes(ql) || s.email.toLowerCase().includes(ql)
+    (s.Name||'').toLowerCase().includes(ql) || (s.Email||'').toLowerCase().includes(ql)
   )
   renderTablaSocios()
 }
