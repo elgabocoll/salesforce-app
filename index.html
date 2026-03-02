@@ -418,53 +418,20 @@ input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:
 // ═══════════════════════════════════════════════════════════
 
 const API = {
-  // Endpoint para obtener todas las clases disponibles
-  // action: 'getClases'
-  getClases: () => fetchSF({ action: 'getClases' }),
-
-  // Endpoint para obtener reservas de un socio
-  // action: 'getReservasSocio', socioId: '...'
-  getReservasSocio: (socioId) => fetchSF({ action: 'getReservasSocio', socioId }),
-
-  // Endpoint para obtener perfil del socio actual
-  // action: 'getPerfilSocio', socioId: '...'
-  getPerfilSocio: (socioId) => fetchSF({ action: 'getPerfilSocio', socioId }),
-
-  // Endpoint para crear reserva
-  // action: 'crearReserva', claseId: '...', socioId: '...'
-  crearReserva: (claseId, socioId) => fetchSF({ action: 'crearReserva', claseId, socioId }),
-
-  // Endpoint para cancelar reserva
-  // action: 'cancelarReserva', reservaId: '...'
-  cancelarReserva: (reservaId) => fetchSF({ action: 'cancelarReserva', reservaId }),
-
-  // Endpoint para stats del dashboard
-  // action: 'getDashboard'
-  getDashboard: () => fetchSF({ action: 'getDashboard' }),
-
-  // Endpoint para lista de socios (personal)
-  // action: 'getSocios'
-  getSocios: () => fetchSF({ action: 'getSocios' }),
-
-  // Endpoint para reservas y asistencia (personal)
-  // action: 'getReservasPersonal'
-  getReservasPersonal: () => fetchSF({ action: 'getReservasPersonal' }),
-
-  // Endpoint para guardar asistencia
-  // action: 'guardarAsistencia', reservas: [...]
-  guardarAsistencia: (reservas) => fetchSF({ action: 'guardarAsistencia', reservas }),
+  getSocios:       () => fetchSF({ action: 'query', tipo: 'contactos' }),
+  getPerfilSocio:  () => fetchSF({ action: 'query', tipo: 'perfilSocio' }),
+  getReservasSocio:() => fetchSF({ action: 'query', tipo: 'reservasSocio' }),
+  cancelarReserva: (nombre, fecha) => fetchSF({ action: 'query', tipo: 'cancelarReserva', nombre, fecha }),
 }
 
 // Función base para llamar a Netlify Function
 async function fetchSF(payload) {
-  // TODO: descomentar cuando el .mjs esté listo
-  // const res = await fetch('/.netlify/functions/salesforce', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(payload)
-  // })
-  // return await res.json()
-  return null // Por ahora usa datos mock
+  const res = await fetch('/.netlify/functions/salesforce', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  return await res.json()
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -633,47 +600,69 @@ function reservarClase(claseId) {
 // ═══════════════════════════════════════════════════════════
 // RENDER: SOCIO MIS RESERVAS
 // ═══════════════════════════════════════════════════════════
-function renderSocioReservas() {
-  // TODO: const data = await API.getReservasSocio(SOCIO_ID_ACTUAL)
-  const data = MOCK.reservasSocio
+async function renderSocioReservas() {
   const tbody = document.getElementById('tbodySocioReservas')
-  tbody.innerHTML = data.map(r => `
-    <tr>
-      <td><strong>${r.clase}</strong></td>
-      <td>${r.fecha}</td>
-      <td>${r.hora}</td>
-      <td>${r.monitor}</td>
-      <td>${badgeEstado(r.estado)}</td>
-      <td>${r.estado === 'Reservada'
-        ? `<button class="btn btn-ghost btn-sm" onclick="cancelarReserva('${r.id}')">Cancelar</button>`
-        : '—'}</td>
-    </tr>`).join('')
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-2)">Cargando...</td></tr>'
+  try {
+    const data = await API.getReservasSocio()
+    if (data.error) { tbody.innerHTML = `<tr><td colspan="6" style="color:var(--danger);padding:1rem">⚠️ ${data.error}</td></tr>`; return }
+    const records = data.records || []
+    if (!records.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-2)">No tienes reservas.</td></tr>'; return }
+    tbody.innerHTML = records.map(r => `
+      <tr>
+        <td><strong>${r.Clase||r.clase||'—'}</strong></td>
+        <td>${r.Fecha||r.fecha||'—'}</td>
+        <td>${r.Hora||r.hora||'—'}</td>
+        <td>${r.Monitor||r.monitor||'—'}</td>
+        <td>${badgeEstado(r.Estado||r.estado)}</td>
+        <td>${(r.Estado||r.estado)==='Reservada'
+          ? `<button class="btn btn-ghost btn-sm" onclick="cancelarReserva(this,'${r.Clase||r.clase}','${r.Fecha||r.fecha}')">Cancelar</button>`
+          : '—'}</td>
+      </tr>`).join('')
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="6" style="color:var(--danger);padding:1rem">⚠️ Error: ${e.message}</td></tr>`
+  }
 }
 
-function cancelarReserva(reservaId) {
-  // TODO: await API.cancelarReserva(reservaId)
-  alert(`Reserva ${reservaId} cancelada ✅\n(Conectar con Salesforce para cancelar de verdad)`)
+async function cancelarReserva(btn, nombre, fecha) {
+  if (!confirm(`¿Cancelar "${nombre}" del ${fecha}?`)) return
+  btn.disabled = true; btn.textContent = 'Cancelando...'
+  try {
+    const data = await API.cancelarReserva(nombre, fecha)
+    if (data.error) { alert('Error: ' + data.error); btn.disabled = false; btn.textContent = 'Cancelar'; return }
+    const row = btn.closest('tr')
+    row.cells[4].innerHTML = badgeEstado('Cancelada')
+    btn.closest('td').innerHTML = '—'
+  } catch(e) { alert('Error: ' + e.message); btn.disabled = false; btn.textContent = 'Cancelar' }
 }
 
 // ═══════════════════════════════════════════════════════════
 // RENDER: SOCIO PERFIL
 // ═══════════════════════════════════════════════════════════
-function renderSocioPerfil() {
-  // TODO: const data = await API.getPerfilSocio(SOCIO_ID_ACTUAL)
-  const p = MOCK.perfil
-  document.getElementById('perfilNombre').textContent = p.nombre
-  document.getElementById('perfilEmail').textContent = p.email
-  document.getElementById('perfilTelefono').textContent = p.telefono
-  document.getElementById('perfilDni').textContent = p.dni
-
-  const m = p.membresia
-  document.getElementById('perfilMembresia').innerHTML = `
-    <div class="membership-row"><span class="membership-key">Tipo</span><strong>${m.tipo}</strong></div>
-    <div class="membership-row"><span class="membership-key">Precio</span><span>${m.precio}</span></div>
-    <div class="membership-row"><span class="membership-key">Inicio</span><span>${m.inicio}</span></div>
-    <div class="membership-row"><span class="membership-key">Fin</span><span>${m.fin}</span></div>
-    <div class="membership-row"><span class="membership-key">Estado</span>${badgeEstado(m.estado)}</div>
-  `
+async function renderSocioPerfil() {
+  document.getElementById('perfilNombre').textContent = '...'
+  document.getElementById('perfilEmail').textContent = '...'
+  document.getElementById('perfilTelefono').textContent = '...'
+  document.getElementById('perfilDni').textContent = '...'
+  document.getElementById('perfilMembresia').innerHTML = '<p style="color:var(--text-2)">Cargando...</p>'
+  try {
+    const data = await API.getPerfilSocio()
+    if (data.error) { document.getElementById('perfilNombre').textContent = '⚠️ ' + data.error; return }
+    const p = data.records?.[0] || data
+    document.getElementById('perfilNombre').textContent    = p.Name||p.nombre||'—'
+    document.getElementById('perfilEmail').textContent     = p.Email||p.email||'—'
+    document.getElementById('perfilTelefono').textContent  = p.Phone||p.telefono||'—'
+    document.getElementById('perfilDni').textContent       = p.DNI||p.dni||'—'
+    const memTipo   = p.Membresia||p.MembresiaType||'—'
+    const memEstado = p.MembresiaEstado||p.MembresiaState||'—'
+    const memInicio = p.MembresiaInicio||p.MembresiaStart||'—'
+    const memFin    = p.MembresiaFin||p.MembresiaEnd||'—'
+    document.getElementById('perfilMembresia').innerHTML = `
+      <div class="membership-row"><span class="membership-key">Tipo</span><strong>${memTipo}</strong></div>
+      <div class="membership-row"><span class="membership-key">Inicio</span><span>${memInicio}</span></div>
+      <div class="membership-row"><span class="membership-key">Fin</span><span>${memFin}</span></div>
+      <div class="membership-row"><span class="membership-key">Estado</span>${badgeEstado(memEstado)}</div>`
+  } catch(e) { document.getElementById('perfilNombre').textContent = '⚠️ Error: ' + e.message }
 }
 
 // ═══════════════════════════════════════════════════════════
