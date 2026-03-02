@@ -615,7 +615,7 @@ async function renderSocioReservas() {
         <td>${r.Hora||r.hora||'—'}</td>
         <td>${r.Monitor||r.monitor||'—'}</td>
         <td>${badgeEstado(r.Estado||r.estado)}</td>
-        <td>${(r.Estado||r.estado)==='Reservada'
+        <td>${(r.Estado||r.estado)==='reserved'
           ? `<button class="btn btn-ghost btn-sm" onclick="cancelarReserva(this,'${r.Clase||r.clase}','${r.Fecha||r.fecha}')">Cancelar</button>`
           : '—'}</td>
       </tr>`).join('')
