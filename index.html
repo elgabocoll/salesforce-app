@@ -251,7 +251,7 @@ input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:
     </div>
     <div class="filters">
       <input type="date" id="filtroFechaSocio">
-      <select class="filter-select" id="filtroTipoSocio" onchange="renderSocioClases()">
+      <select class="filter-select" id="filtroTipoSocio" onchange="Clases()">
         <option value="">Todos los tipos</option>
         <option>Yoga</option><option>HIIT</option><option>Spinning</option>
         <option>Pilates</option><option>Fuerza</option><option>Baile</option><option>Crossfit</option>
@@ -640,31 +640,41 @@ async function cancelarReserva(btn, nombre, fecha) {
 // RENDER: SOCIO PERFIL
 // ═══════════════════════════════════════════════════════════
 async function renderSocioPerfil() {
-  document.getElementById('perfilNombre').textContent = '...'
-  document.getElementById('perfilEmail').textContent = '...'
-  document.getElementById('perfilTelefono').textContent = '...'
-  document.getElementById('perfilDni').textContent = '...'
-  document.getElementById('perfilMembresia').innerHTML = '<p style="color:var(--text-2)">Cargando...</p>'
+  document.getElementById('perfilNombre').innerHTML = '<span class="spinner"></span>'
+  document.getElementById('perfilEmail').textContent = '—'
+  document.getElementById('perfilTelefono').textContent = '—'
+  document.getElementById('perfilDni').textContent = '—'
+  document.getElementById('perfilMembresia').innerHTML = '<div style="color:var(--text-2);font-size:.875rem"><span class="spinner"></span>Cargando...</div>'
+
   try {
     const data = await API.getPerfilSocio()
-    if (data.error) { document.getElementById('perfilNombre').textContent = '⚠️ ' + data.error; return }
-    const p = data.records?.[0] || data
-    document.getElementById('perfilNombre').textContent    = p.Name||p.nombre||'—'
-    document.getElementById('perfilEmail').textContent     = p.Email||p.email||'—'
-    document.getElementById('perfilTelefono').textContent  = p.Phone||p.telefono||'—'
-    document.getElementById('perfilDni').textContent       = p.DNI||p.dni||'—'
-    const memTipo   = p.Membresia||p.MembresiaType||'—'
-    const memEstado = p.MembresiaEstado||p.MembresiaState||'—'
-    const memInicio = p.MembresiaInicio||p.MembresiaStart||'—'
-    const memFin    = p.MembresiaFin||p.MembresiaEnd||'—'
-    document.getElementById('perfilMembresia').innerHTML = `
-      <div class="membership-row"><span class="membership-key">Tipo</span><strong>${memTipo}</strong></div>
-      <div class="membership-row"><span class="membership-key">Inicio</span><span>${memInicio}</span></div>
-      <div class="membership-row"><span class="membership-key">Fin</span><span>${memFin}</span></div>
-      <div class="membership-row"><span class="membership-key">Estado</span>${badgeEstado(memEstado)}</div>`
-  } catch(e) { document.getElementById('perfilNombre').textContent = '⚠️ Error: ' + e.message }
-}
 
+    if (data.error) {
+      document.getElementById('perfilNombre').textContent = '⚠️ ' + data.error
+      document.getElementById('perfilMembresia').innerHTML = ''
+      return
+    }
+
+    // La respuesta viene en records[0].contact
+    const p = data.records?.[0]?.contact || data.records?.[0] || data
+
+    document.getElementById('perfilNombre').textContent    = p.Name     || '—'
+    document.getElementById('perfilEmail').textContent     = p.Email    || '—'
+    document.getElementById('perfilTelefono').textContent  = p.Telefono || '—'
+    document.getElementById('perfilDni').textContent       = p.DNI      || p.dni || '—'
+
+    document.getElementById('perfilMembresia').innerHTML = `
+      <div class="membership-row"><span class="membership-key">Tipo</span><strong>${p.Membresia || '—'}</strong></div>
+      <div class="membership-row"><span class="membership-key">Precio</span><span>${p.membresiaPrecio ? '€' + p.membresiaPrecio + '/año' : '—'}</span></div>
+      <div class="membership-row"><span class="membership-key">Inicio</span><span>${p.membresiaStartDate || '—'}</span></div>
+      <div class="membership-row"><span class="membership-key">Fin</span><span>${p.membresiaEndDate || '—'}</span></div>
+      <div class="membership-row"><span class="membership-key">Estado</span>${badgeEstado(p.Status)}</div>`
+
+  } catch(e) {
+    document.getElementById('perfilNombre').textContent = '⚠️ Error: ' + e.message
+    document.getElementById('perfilMembresia').innerHTML = ''
+  }
+}
 // ═══════════════════════════════════════════════════════════
 // RENDER: DASHBOARD
 // ═══════════════════════════════════════════════════════════
