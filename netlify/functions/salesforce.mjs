@@ -82,7 +82,7 @@ export const handler = async (event) => {
     // GET /services/apexrest/me/bookings
     // Devuelve las reservas del contacto actual
     reservasSocio: {
-      path: '/services/apexrest/me/bookings',
+      path: '/services/apexrest/getBookings/me',
       method: 'GET',
       toRecords: (data) => data?.bookings ?? data?.records ?? (Array.isArray(data) ? data : []),
       isOk: (data) => !data?.errorCode || String(data?.errorCode) === '200',
