@@ -100,9 +100,17 @@ export const handler = async (event) => {
       isOk: (data) => !data?.errorCode || String(data?.errorCode) === '200',
       getError: (data) => data?.message || 'Error al cancelar reserva',
     },
-
+     clases: {
+      path: '/services/apexrest/getBookings',
+      method: 'GET',
+      toRecords: (data) => data?.bookings ?? data?.records ?? (Array.isArray(data) ? data : []),
+      isOk: (data) => !data?.errorCode || String(data?.errorCode) === '200',
+      getError: (data) => data?.message || 'Error obteniendo clases',
+    },
     // TODO: añadir más endpoints aquí cuando estén listos en Apex
-    // clases: { path: '/services/apexrest/getClases/', method: 'GET', toRecords: d => d?.clases ?? [], ... },
+    // GET /services/apexrest/getBookings
+// Devuelve todas las clases para la vista de personal
+   
     // reservasPersonal: { path: '/services/apexrest/getBookings/', method: 'GET', toRecords: d => d?.bookings ?? [], ... },
   };
 
