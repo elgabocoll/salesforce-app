@@ -334,12 +334,9 @@ input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Socio</th><th>Clase</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Asistida</th></tr></thead>
+          <thead><tr><th>Nombre</th><th>Tipo</th><th>Fecha / Hora</th><th>Capacidad</th><th>Monitor</th><th>Estado</th></tr></thead>
           <tbody id="tbodyReservas"></tbody>
         </table>
-      </div>
-      <div style="padding:1rem 1.5rem;border-top:1px solid var(--border)">
-        <button class="btn btn-primary btn-sm" onclick="guardarAsistencia()">💾 Guardar asistencia</button>
       </div>
     </main>
 
@@ -452,7 +449,7 @@ const API = {
   getReservasSocio: () => fetchSF({ action: 'query', tipo: 'reservasSocio' }),
   cancelarReserva:  (nombre, fecha) => fetchSF({ action: 'query', tipo: 'cancelarReserva', nombre, fecha }),
   // TODO: getClases            → fetchSF({ action: 'query', tipo: 'clases' })
-  // TODO: getReservasPersonal  → fetchSF({ action: 'query', tipo: 'reservasPersonal' })
+  getReservasPersonal: () => fetchSF({ action: 'query', tipo: 'reservasPersonal' }),
   // TODO: getDashboard         → fetchSF({ action: 'query', tipo: 'dashboard' })
   // TODO: guardarAsistencia    → fetchSF({ action: 'query', tipo: 'guardarAsistencia', reservas })
 }
@@ -704,20 +701,44 @@ function toggleClase(claseId, activa) { console.log(`Clase ${claseId} → activa
 // ═══════════════════════════════════════════════
 // PERSONAL: RESERVAS (mock)
 // ═══════════════════════════════════════════════
-function renderPersonalReservas() {
-  const data = MOCK.reservasPersonal
-  const sel = document.getElementById('filtroClaseReservas')
-  if (sel.options.length <= 1) [...new Set(data.map(r=>r.clase))].forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o)})
-  const filtered = sel.value ? data.filter(r=>r.clase===sel.value) : data
-  document.getElementById('tbodyReservas').innerHTML = filtered.map(r=>`
-    <tr>
-      <td><strong>${r.socio}</strong></td><td>${r.clase}</td><td>${r.fecha}</td>
-      <td style="font-family:var(--mono)">${r.hora}</td>
-      <td>${badgeEstado(r.estado)}</td>
-      <td style="text-align:center"><input type="checkbox" ${r.asistida?'checked':''} data-id="${r.id}" ${r.estado==='Cancelada'?'disabled':''}></td>
-    </tr>`).join('')
+async function renderPersonalReservas() {
+  const tbody = document.getElementById('tbodyReservas')
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="6"><span class="spinner"></span>Cargando reservas...</td></tr>'
+  try {
+    const data = await API.getReservasPersonal()
+    if (data.error) {
+      tbody.innerHTML = `<tr class="error-row"><td colspan="6">⚠️ ${data.error}</td></tr>`
+      return
+    }
+    const records = data.records || []
+    if (!records.length) {
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="6">No hay reservas.</td></tr>'
+      return
+    }
+    tbody.innerHTML = records.map(r => {
+      const inscritos = parseInt(r.CapacidadActual) || 0
+      const capacidad = parseInt(r.CapacidadMaxima) || 0
+      const pct       = capacidad > 0 ? Math.round(inscritos / capacidad * 100) : 0
+      return `<tr>
+        <td><strong>${r.Name    || '—'}</strong></td>
+        <td><span class="badge badge-blue">${r.Type || '—'}</span></td>
+        <td style="font-family:var(--mono);font-size:.8rem">${r.Fecha || '—'} · ${r.Hora || '—'}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span style="font-size:.85rem">${inscritos}/${capacidad}</span>
+            <div class="capacity-bar" style="width:60px">
+              <div class="capacity-fill ${pct>=100?'full':pct>=80?'near':''}" style="width:${pct}%"></div>
+            </div>
+          </div>
+        </td>
+        <td>${r.monitor || '—'}</td>
+        <td>${badgeEstado(r.estado)}</td>
+      </tr>`
+    }).join('')
+  } catch(e) {
+    tbody.innerHTML = `<tr class="error-row"><td colspan="6">⚠️ Error: ${e.message}</td></tr>`
+  }
 }
-
 function guardarAsistencia() {
   const checks = document.querySelectorAll('#tbodyReservas input[type="checkbox"]')
   alert('Asistencia guardada ✅\n(Conectar endpoint cuando esté listo)')
