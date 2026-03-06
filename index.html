@@ -319,7 +319,7 @@ input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:
       <div class="page-header"><h1 class="page-title">Gestión de clases</h1><button class="btn btn-primary btn-sm">+ Nueva clase</button></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Nombre</th><th>Tipo</th><th>Día / Hora</th><th>Capacidad</th><th>Monitor</th><th>Estado</th></tr></thead>
+          <thead><tr><th>Nombre</th><th>Tipo</th><th>Día / Hora</th><th>Capacidad</th><th>Monitor</th><th>Estado</th><th>Acciones</th></tr></thead>
           <tbody id="tbodyClases"></tbody>
         </table>
       </div>
@@ -451,7 +451,7 @@ const API = {
   getPerfilSocio:   () => fetchSF({ action: 'query', tipo: 'perfilSocio' }),
   getReservasSocio: () => fetchSF({ action: 'query', tipo: 'reservasSocio' }),
   cancelarReserva:  (nombre, fecha) => fetchSF({ action: 'query', tipo: 'cancelarReserva', nombre, fecha }),
-  getClases: () => fetchSF({ action: 'query', tipo: 'clases' }),
+  // TODO: getClases            → fetchSF({ action: 'query', tipo: 'clases' })
   // TODO: getReservasPersonal  → fetchSF({ action: 'query', tipo: 'reservasPersonal' })
   // TODO: getDashboard         → fetchSF({ action: 'query', tipo: 'dashboard' })
   // TODO: guardarAsistencia    → fetchSF({ action: 'query', tipo: 'guardarAsistencia', reservas })
@@ -681,46 +681,22 @@ function filtrarSocioEstado(estado) {
 // ═══════════════════════════════════════════════
 // PERSONAL: CLASES (mock)
 // ═══════════════════════════════════════════════
-async function renderPersonalClases() {
-  const tbody = document.getElementById('tbodyClases')
-  tbody.innerHTML = '<tr class="loading-row"><td colspan="6"><span class="spinner"></span>Cargando clases...</td></tr>'
-  try {
-    const data = await API.getClases()
-    if (data.error) {
-      tbody.innerHTML = `<tr class="error-row"><td colspan="6">⚠️ ${data.error}</td></tr>`
-      return
-    }
-    const records = data.records || []
-    if (!records.length) {
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="6">No hay clases disponibles.</td></tr>'
-      return
-    }
-    tbody.innerHTML = records.map(c => {
-      const inscritos  = parseInt(c.CapacidadActual) || 0
-      const capacidad  = parseInt(c.CapacidadMaxima) || 0
-      const pct        = capacidad > 0 ? Math.round(inscritos / capacidad * 100) : 0
-      const estadoBadge = c.estado === 'Active' || c.estado === 'Activa'
-        ? '<span class="badge badge-green">Activa</span>'
-        : '<span class="badge badge-gray">Inactiva</span>'
-      return `<tr>
-        <td><strong>${c.Name || '—'}</strong></td>
-        <td><span class="badge badge-blue">${c.Type || '—'}</span></td>
-        <td style="font-family:var(--mono);font-size:.8rem">${c.Fecha || '—'} · ${c.Hora || '—'}</td>
-        <td>
-          <div style="display:flex;align-items:center;gap:.5rem">
-            <span style="font-size:.85rem">${inscritos}/${capacidad}</span>
-            <div class="capacity-bar" style="width:60px">
-              <div class="capacity-fill ${pct>=100?'full':pct>=80?'near':''}" style="width:${pct}%"></div>
-            </div>
-          </div>
-        </td>
-        <td>${c.monitor || '—'}</td>
-        <td>${estadoBadge}</td>
-      </tr>`
-    }).join('')
-  } catch(e) {
-    tbody.innerHTML = `<tr class="error-row"><td colspan="6">⚠️ Error: ${e.message}</td></tr>`
-  }
+function renderPersonalClases() {
+  document.getElementById('tbodyClases').innerHTML = MOCK.clases.map(c => {
+    const pct = Math.round(c.inscritos/c.capacidad*100)
+    return `<tr>
+      <td><strong>${c.nombre}</strong></td>
+      <td><span class="badge badge-blue">${c.tipo}</span></td>
+      <td style="font-family:var(--mono);font-size:.8rem">${c.fecha} · ${c.hora}</td>
+      <td><div style="display:flex;align-items:center;gap:.5rem"><span>${c.inscritos}/${c.capacidad}</span><div class="capacity-bar" style="width:60px"><div class="capacity-fill ${pct>=100?'full':pct>=80?'near':''}" style="width:${pct}%"></div></div></div></td>
+      <td>${c.monitor}</td>
+      <td>${c.activa?'<span class="badge badge-green">Activa</span>':'<span class="badge badge-gray">Inactiva</span>'}</td>
+      <td style="display:flex;align-items:center;gap:.75rem">
+        <label class="toggle"><input type="checkbox" ${c.activa?'checked':''} onchange="toggleClase('${c.id}',this.checked)"><span class="toggle-slider"></span></label>
+        <button class="btn btn-ghost btn-sm">✏️</button>
+      </td>
+    </tr>`
+  }).join('')
 }
 
 function toggleClase(claseId, activa) { console.log(`Clase ${claseId} → activa: ${activa}`) }
