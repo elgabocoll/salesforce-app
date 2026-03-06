@@ -490,6 +490,7 @@ const API = {
   getSessions:         () => fetchSF({ action: 'query', tipo: 'sessions' }),
   editSession:         (body) => fetchSF({ action: 'query', tipo: 'editSession', ...body }),
   getReservasPersonal: () => fetchSF({ action: 'query', tipo: 'reservasPersonal' }),
+  bookSession: (id) => fetchSF({ action: 'query', tipo: 'bookSession', Id: id }),
 }
 
 // ═══════════════════════════════════════════════
@@ -621,9 +622,31 @@ async function renderSocioClases() {
   }
 }
 
-function reservarClase(sessionId) {
-  // TODO: conectar endpoint de creación de reserva
-  alert('Reserva creada ✅\n(Conectar endpoint cuando esté listo)')
+async function reservarClase(sessionId) {
+  const btn = document.querySelector(`button[onclick="reservarClase('${sessionId}')"]`)
+  if (btn) { btn.disabled = true; btn.textContent = 'Reservando...' }
+
+  try {
+    const data = await API.bookSession(sessionId)
+
+    if (String(data?.errorCode) === '409' || data?.message?.toLowerCase().includes('already')) {
+      alert('⚠️ Ya estás inscrito en esta clase.')
+    } else if (data.error) {
+      alert('Error al reservar: ' + data.error)
+    } else {
+      alert('✅ ¡Reserva realizada con éxito!')
+      // Invalida el caché para que recargue las plazas actualizadas
+      sessionesCache = []
+      renderSocioClases()
+      return
+    }
+
+  } catch(e) {
+    alert('Error de conexión: ' + e.message)
+  }
+
+  // Restaurar botón si hubo error
+  if (btn) { btn.disabled = false; btn.textContent = 'Reservar' }
 }
 
 // ═══════════════════════════════════════════════
