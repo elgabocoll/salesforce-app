@@ -147,7 +147,7 @@ export const handler = async (event) => {
       method:    'POST',
       bodyData:  { Id: body?.Id },
       toRecords: () => [],
-      isOk:      (data) => !data?.errorCode || String(data?.errorCode) === '200' || String(data?.errorCode) === '409',
+      isOk: (data) => ['200', '409'].includes(String(data?.errorCode)),
       getError:  (data) => data?.message || 'Error al reservar sesión',
     },
 
@@ -194,7 +194,7 @@ export const handler = async (event) => {
       })
     }
 
-    return json(200, { records: cfg.toRecords(data), ok: true })
+    return json(200, { records: cfg.toRecords(data), ok: true, raw: data })
 
   } catch (e) {
     return json(500, { error: 'Error al consultar Salesforce.', details: e.message })
