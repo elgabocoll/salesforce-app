@@ -9,68 +9,74 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
 :root{
-  --bg:#f0f2f5;
-  --surface:#ffffff;
-  --sidebar:#0f1923;
-  --sidebar-hover:#1a2535;
-  --accent:#16a34a;
-  --accent-dark:#15803d;
-  --accent-light:#dcfce7;
-  --danger:#dc2626;
-  --danger-light:#fee2e2;
-  --warning:#d97706;
-  --warning-light:#fef3c7;
-  --text:#111827;
-  --text-2:#6b7280;
-  --border:#e5e7eb;
-  --font:'Outfit',sans-serif;
-  --mono:'JetBrains Mono',monospace;
+  --bg:#f0f2f5;--surface:#ffffff;--sidebar:#0f1923;--sidebar-hover:#1a2535;
+  --accent:#16a34a;--accent-dark:#15803d;--accent-light:#dcfce7;
+  --danger:#dc2626;--danger-light:#fee2e2;--warning:#d97706;--warning-light:#fef3c7;
+  --text:#111827;--text-2:#6b7280;--border:#e5e7eb;
+  --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
   --radius:12px;
   --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
   --shadow-lg:0 8px 32px rgba(0,0,0,.12);
 }
 
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
-
-/* ── HEADER ── */
-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:.9rem 2rem;background:var(--surface);
-  border-bottom:1px solid var(--border);
-  box-shadow:0 1px 8px rgba(0,0,0,.06);
-  position:sticky;top:0;z-index:200;
+/* ══ LOGIN ══ */
+#loginPage{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:var(--sidebar);
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(22,163,74,.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(22,163,74,.08) 0%, transparent 50%);
+  font-family:var(--font);
 }
+.login-card{
+  background:var(--surface);border-radius:20px;
+  box-shadow:0 24px 80px rgba(0,0,0,.35);
+  padding:2.5rem;width:100%;max-width:400px;
+  animation:loginFadeIn .4s ease both;
+}
+@keyframes loginFadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.login-logo{display:flex;align-items:center;gap:.75rem;margin-bottom:2rem}
+.login-logo-icon{width:42px;height:42px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.3rem;box-shadow:0 4px 12px rgba(22,163,74,.4)}
+.login-logo-text{font-size:1.4rem;font-weight:800;letter-spacing:-.02em}
+.login-logo-sub{font-size:.75rem;color:var(--text-2);font-family:var(--mono);margin-top:.1rem}
+.login-title{font-size:1.25rem;font-weight:700;margin-bottom:.35rem}
+.login-subtitle{font-size:.875rem;color:var(--text-2);margin-bottom:1.75rem}
+.login-field{margin-bottom:1.1rem}
+.login-label{display:block;font-size:.78rem;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+.login-input{width:100%;padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-family:var(--font);font-size:.9rem;color:var(--text);outline:none;transition:border .2s,box-shadow .2s;background:var(--bg)}
+.login-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(22,163,74,.12);background:#fff}
+.login-input.error{border-color:var(--danger);box-shadow:0 0 0 3px rgba(220,38,38,.1)}
+.login-error{display:none;align-items:center;gap:.5rem;background:var(--danger-light);color:var(--danger);border-radius:8px;padding:.6rem .9rem;font-size:.82rem;font-weight:500;margin-bottom:1rem}
+.login-error.show{display:flex}
+.login-btn{width:100%;padding:.8rem;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:var(--font);font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:.25rem}
+.login-btn:hover{background:var(--accent-dark);transform:translateY(-1px);box-shadow:0 6px 20px rgba(22,163,74,.35)}
+.login-hint{margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border);font-size:.78rem;color:var(--text-2)}
+.login-hint strong{color:var(--text);font-family:var(--mono)}
+.login-hint-row{display:flex;justify-content:space-between;align-items:center;padding:.25rem 0}
+
+/* ══ APP ══ */
+#appPage{display:none;flex-direction:column;min-height:100vh}
+body{font-family:var(--font);background:var(--bg);color:var(--text)}
+header{display:flex;align-items:center;justify-content:space-between;padding:.9rem 2rem;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:0 1px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:200}
 .logo{display:flex;align-items:center;gap:.6rem;font-size:1.15rem;font-weight:800;color:var(--text);letter-spacing:-.02em}
 .logo-icon{width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.85rem}
-.role-switcher{display:flex;background:var(--bg);border-radius:8px;padding:3px;gap:3px}
-.role-btn{padding:.4rem 1.2rem;border:none;border-radius:6px;font-family:var(--font);font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text-2);background:none}
-.role-btn.active{background:var(--surface);color:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.1)}
-
-/* ── LAYOUT ── */
+.header-right{display:flex;align-items:center;gap:1rem}
+.user-chip{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-2)}
+.user-chip strong{color:var(--text);font-weight:600}
+.user-role-badge{padding:.2rem .65rem;border-radius:999px;font-size:.72rem;font-weight:700}
+.user-role-badge.personal{background:#eff6ff;color:#2563eb}
+.user-role-badge.socio{background:var(--accent-light);color:var(--accent-dark)}
+.btn-logout{display:flex;align-items:center;gap:.4rem;padding:.4rem .9rem;border-radius:8px;font-family:var(--font);font-size:.8rem;font-weight:600;border:1.5px solid var(--border);background:none;color:var(--text-2);cursor:pointer;transition:all .2s}
+.btn-logout:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-light)}
 .app{display:flex;flex:1;min-height:calc(100vh - 57px)}
-
-/* ── SIDEBAR ── */
-.sidebar{
-  width:200px;flex-shrink:0;background:var(--sidebar);
-  padding:1.5rem 0;display:flex;flex-direction:column;
-}
-.nav-item{
-  display:flex;align-items:center;gap:.75rem;
-  padding:.7rem 1.5rem;color:rgba(255,255,255,.5);
-  font-size:.88rem;font-weight:500;cursor:pointer;
-  transition:all .18s;border-left:3px solid transparent;
-}
+.sidebar{width:200px;flex-shrink:0;background:var(--sidebar);padding:1.5rem 0;display:flex;flex-direction:column}
+.nav-item{display:flex;align-items:center;gap:.75rem;padding:.7rem 1.5rem;color:rgba(255,255,255,.5);font-size:.88rem;font-weight:500;cursor:pointer;transition:all .18s;border-left:3px solid transparent}
 .nav-item:hover{color:rgba(255,255,255,.85);background:var(--sidebar-hover)}
 .nav-item.active{color:#fff;background:var(--sidebar-hover);border-left-color:var(--accent)}
 .nav-icon{font-size:1rem;width:20px;text-align:center}
 .sidebar-footer{margin-top:auto;padding:1rem 1.5rem;color:rgba(255,255,255,.25);font-size:.7rem;font-family:var(--mono)}
-
-/* ── CONTENT ── */
 .content{flex:1;padding:2rem;overflow-y:auto;max-width:1400px}
-
-/* ── PAGE HEADER ── */
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem}
 .page-title{font-size:1.5rem;font-weight:800;letter-spacing:-.02em}
 .btn{padding:.6rem 1.25rem;border-radius:8px;font-family:var(--font);font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;border:none}
@@ -79,12 +85,9 @@ header{
 .btn-sm{padding:.4rem .9rem;font-size:.8rem}
 .btn-ghost{background:none;border:1px solid var(--border);color:var(--text-2)}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
-.btn-danger{background:var(--danger);color:#fff}
-
-/* ── CARDS ── */
-.card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem}
-
-/* ── STAT CARDS ── */
+.btn-danger-ghost{background:none;border:1px solid var(--danger);color:var(--danger);padding:.4rem .9rem;font-size:.8rem;border-radius:8px;font-family:var(--font);font-weight:600;cursor:pointer;transition:all .2s}
+.btn-danger-ghost:hover{background:var(--danger-light)}
+.btn-danger-ghost:disabled{opacity:.4;cursor:not-allowed}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
 .stat-card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem}
 .stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
@@ -94,14 +97,10 @@ header{
 .stat-icon.purple{background:#faf5ff;color:#7c3aed}
 .stat-value{font-size:1.6rem;font-weight:800;line-height:1}
 .stat-label{font-size:.78rem;color:var(--text-2);margin-top:.2rem}
-
-/* ── CHARTS ROW ── */
 .charts-row{display:grid;grid-template-columns:1.4fr 1fr;gap:1rem;margin-bottom:1.5rem}
 .chart-card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem}
 .chart-title{font-size:.9rem;font-weight:700;margin-bottom:1rem;color:var(--text)}
 .chart-wrap{position:relative;height:180px}
-
-/* ── TABLE ── */
 .table-wrap{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
 .table-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .table-title{font-size:.95rem;font-weight:700}
@@ -110,30 +109,19 @@ th{padding:.75rem 1.25rem;text-align:left;font-size:.75rem;font-weight:600;color
 td{padding:.9rem 1.25rem;font-size:.875rem;border-bottom:1px solid var(--border)}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafafa}
-
-/* ── BADGES ── */
 .badge{display:inline-flex;align-items:center;padding:.2rem .65rem;border-radius:999px;font-size:.72rem;font-weight:600}
 .badge-green{background:var(--accent-light);color:var(--accent-dark)}
 .badge-red{background:var(--danger-light);color:var(--danger)}
 .badge-gray{background:#f3f4f6;color:#6b7280}
 .badge-orange{background:var(--warning-light);color:var(--warning)}
 .badge-blue{background:#eff6ff;color:#2563eb}
-
-/* ── SEARCH ── */
-.search-bar{display:flex;align-items:center;gap:.5rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.5rem 1rem;font-family:var(--font);font-size:.875rem;color:var(--text);outline:none;transition:border .2s;width:280px}
-.search-bar:focus{border-color:var(--accent)}
 .search-wrap{position:relative}
 .search-wrap input{width:100%;padding:.55rem 1rem .55rem 2.4rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-family:var(--font);font-size:.875rem;outline:none;transition:border .2s}
 .search-wrap input:focus{border-color:var(--accent)}
 .search-wrap::before{content:'🔍';position:absolute;left:.75rem;top:50%;transform:translateY(-50%);font-size:.8rem;pointer-events:none}
-
-/* ── FILTERS ── */
 .filters{display:flex;gap:.75rem;margin-bottom:1.25rem;align-items:center;flex-wrap:wrap}
 .filter-select{padding:.5rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-family:var(--font);font-size:.85rem;color:var(--text);outline:none;cursor:pointer}
-.filter-select:focus{border-color:var(--accent)}
 input[type="date"]{padding:.5rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-family:var(--font);font-size:.85rem;outline:none}
-
-/* ── CLASS CARDS GRID ── */
 .classes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
 .class-card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem;display:flex;flex-direction:column;gap:.75rem;transition:transform .2s,box-shadow .2s}
 .class-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
@@ -142,21 +130,16 @@ input[type="date"]{padding:.5rem .9rem;background:var(--surface);border:1px soli
 .class-type{display:inline-block;padding:.18rem .6rem;background:var(--bg);border-radius:6px;font-size:.72rem;font-weight:600;color:var(--text-2);margin-top:.3rem}
 .class-meta{display:flex;flex-direction:column;gap:.35rem}
 .class-meta-row{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-2)}
-.class-meta-row span:first-child{font-size:.9rem}
 .capacity-bar{height:5px;background:var(--bg);border-radius:999px;overflow:hidden}
 .capacity-fill{height:100%;background:var(--accent);border-radius:999px;transition:width .4s}
 .capacity-fill.full{background:var(--danger)}
 .capacity-fill.near{background:var(--warning)}
-
-/* ── TOGGLE ── */
 .toggle{position:relative;width:38px;height:22px;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0}
 .toggle-slider{position:absolute;inset:0;background:#d1d5db;border-radius:999px;cursor:pointer;transition:.3s}
 .toggle-slider::before{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;left:3px;top:3px;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .toggle input:checked+.toggle-slider{background:var(--accent)}
 .toggle input:checked+.toggle-slider::before{transform:translateX(16px)}
-
-/* ── PROFILE ── */
 .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
 .profile-section{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem}
 .profile-section-title{display:flex;align-items:center;gap:.5rem;font-size:1rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
@@ -167,264 +150,293 @@ input[type="date"]{padding:.5rem .9rem;background:var(--surface);border:1px soli
 .membership-row{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--border);font-size:.875rem}
 .membership-row:last-child{border-bottom:none}
 .membership-key{color:var(--text-2)}
-
-/* ── MY RESERVATIONS ── */
-.empty-state{text-align:center;padding:4rem 0;color:var(--text-2)}
-.empty-state .empty-icon{font-size:3rem;margin-bottom:1rem}
-
-/* ── CHECKBOX ── */
 input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
-
-/* ── ANIMATIONS ── */
+.loading-row td{text-align:center;padding:2.5rem;color:var(--text-2);font-size:.875rem}
+.error-row td{color:var(--danger);padding:1.25rem 1.5rem;font-size:.875rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.5rem}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .page{animation:fadeUp .3s ease both}
-
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  .charts-row{grid-template-columns:1fr}
-  .classes-grid{grid-template-columns:repeat(2,1fr)}
-  .profile-grid{grid-template-columns:1fr}
-}
-@media(max-width:600px){
-  .sidebar{display:none}
-  .classes-grid{grid-template-columns:1fr}
-}
-
-/* hidden */
+@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}.charts-row{grid-template-columns:1fr}.classes-grid{grid-template-columns:repeat(2,1fr)}.profile-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.sidebar{display:none}.classes-grid{grid-template-columns:1fr}}
 .hidden{display:none!important}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <div class="logo-icon">💪</div>
-    ApexGym
+<!-- ══════════════ LOGIN ══════════════ -->
+<div id="loginPage">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">💪</div>
+      <div>
+        <div class="login-logo-text">ApexGym</div>
+        <div class="login-logo-sub">CRM · Salesforce Connected</div>
+      </div>
+    </div>
+    <div class="login-title">Bienvenido de nuevo</div>
+    <div class="login-subtitle">Inicia sesión para continuar</div>
+    <div class="login-error" id="loginError">
+      <span>⚠️</span><span id="loginErrorMsg">Email o contraseña incorrectos</span>
+    </div>
+    <div class="login-field">
+      <label class="login-label" for="loginEmail">Correo electrónico</label>
+      <input class="login-input" type="email" id="loginEmail" placeholder="tu@email.com" autocomplete="email">
+    </div>
+    <div class="login-field">
+      <label class="login-label" for="loginPass">Contraseña</label>
+      <input class="login-input" type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Entrar →</button>
+    <div class="login-hint">
+      <div style="margin-bottom:.6rem;font-weight:600;color:var(--text)">Cuentas de acceso</div>
+      <div class="login-hint-row"><span>👔 Personal</span><strong>admin@admin.com</strong></div>
+      <div class="login-hint-row"><span>🏃 Socio</span><strong>usuario@usuario.com</strong></div>
+      <div class="login-hint-row" style="margin-top:.4rem"><span>🔑 Contraseña</span><strong>apex1234</strong></div>
+    </div>
   </div>
-  <div class="role-switcher">
-    <button class="role-btn" id="btnSocio" onclick="setRole('socio')">Socio</button>
-    <button class="role-btn active" id="btnPersonal" onclick="setRole('personal')">Personal</button>
-  </div>
-</header>
+</div>
 
-<div class="app">
-  <!-- SIDEBAR SOCIO -->
-  <nav class="sidebar" id="sidebarSocio" style="display:none">
-    <div class="nav-item active" onclick="navTo('socioClases',this)" data-role="socio">
-      <span class="nav-icon">🏋️</span> Clases disponibles
+<!-- ══════════════ APP ══════════════ -->
+<div id="appPage">
+  <header>
+    <div class="logo"><div class="logo-icon">💪</div>ApexGym</div>
+    <div class="header-right">
+      <div class="user-chip">
+        <span>👤</span>
+        <strong id="headerEmail">—</strong>
+        <span class="user-role-badge" id="headerRoleBadge">—</span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">↩ Cerrar sesión</button>
     </div>
-    <div class="nav-item" onclick="navTo('socioReservas',this)" data-role="socio">
-      <span class="nav-icon">📅</span> Mis reservas
-    </div>
-    <div class="nav-item" onclick="navTo('socioPerfil',this)" data-role="socio">
-      <span class="nav-icon">👤</span> Mi perfil
-    </div>
-    <div class="sidebar-footer">ApexGym v1.0<br>Preparado para Salesforce</div>
-  </nav>
+  </header>
 
-  <!-- SIDEBAR PERSONAL -->
-  <nav class="sidebar" id="sidebarPersonal">
-    <div class="nav-item active" onclick="navTo('personalDashboard',this)" data-role="personal">
-      <span class="nav-icon">📊</span> Dashboard
-    </div>
-    <div class="nav-item" onclick="navTo('personalSocios',this)" data-role="personal">
-      <span class="nav-icon">👥</span> Socios
-    </div>
-    <div class="nav-item" onclick="navTo('personalClases',this)" data-role="personal">
-      <span class="nav-icon">🏃</span> Clases
-    </div>
-    <div class="nav-item" onclick="navTo('personalReservas',this)" data-role="personal">
-      <span class="nav-icon">📋</span> Reservas
-    </div>
-    <div class="sidebar-footer">ApexGym v1.0<br>Preparado para Salesforce</div>
-  </nav>
+  <div class="app">
+    <!-- SIDEBAR SOCIO -->
+    <nav class="sidebar hidden" id="sidebarSocio">
+      <div class="nav-item active" onclick="navTo('socioClases',this)" data-role="socio"><span class="nav-icon">🏋️</span>Clases disponibles</div>
+      <div class="nav-item" onclick="navTo('socioReservas',this)" data-role="socio"><span class="nav-icon">📅</span>Mis reservas</div>
+      <div class="nav-item" onclick="navTo('socioPerfil',this)" data-role="socio"><span class="nav-icon">👤</span>Mi perfil</div>
+      <div class="sidebar-footer">ApexGym v1.0<br>Salesforce Connected</div>
+    </nav>
 
-  <!-- ════════════════════════════════════════
-       PÁGINAS SOCIO
-  ════════════════════════════════════════ -->
+    <!-- SIDEBAR PERSONAL -->
+    <nav class="sidebar hidden" id="sidebarPersonal">
+      <div class="nav-item active" onclick="navTo('personalDashboard',this)" data-role="personal"><span class="nav-icon">📊</span>Dashboard</div>
+      <div class="nav-item" onclick="navTo('personalSocios',this)" data-role="personal"><span class="nav-icon">👥</span>Socios</div>
+      <div class="nav-item" onclick="navTo('personalClases',this)" data-role="personal"><span class="nav-icon">🏃</span>Clases</div>
+      <div class="nav-item" onclick="navTo('personalReservas',this)" data-role="personal"><span class="nav-icon">📋</span>Reservas</div>
+      <div class="sidebar-footer">ApexGym v1.0<br>Salesforce Connected</div>
+    </nav>
 
-  <!-- SOCIO: CLASES -->
-  <main class="content hidden page" id="socioClases">
-    <div class="page-header">
-      <h1 class="page-title">Clases disponibles</h1>
-    </div>
-    <div class="filters">
-      <input type="date" id="filtroFechaSocio">
-      <select class="filter-select" id="filtroTipoSocio" onchange="Clases()">
-        <option value="">Todos los tipos</option>
-        <option>Yoga</option><option>HIIT</option><option>Spinning</option>
-        <option>Pilates</option><option>Fuerza</option><option>Baile</option><option>Crossfit</option>
-      </select>
-      <select class="filter-select" id="filtroMonitorSocio" onchange="renderSocioClases()">
-        <option value="">Todos los monitores</option>
-      </select>
-    </div>
-    <div class="classes-grid" id="gridSocioClases"></div>
-  </main>
-
-  <!-- SOCIO: MIS RESERVAS -->
-  <main class="content hidden page" id="socioReservas">
-    <div class="page-header">
-      <h1 class="page-title">Mis reservas</h1>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th>Clase</th><th>Fecha</th><th>Hora</th><th>Monitor</th><th>Estado</th><th>Acción</th>
-        </tr></thead>
-        <tbody id="tbodySocioReservas"></tbody>
-      </table>
-    </div>
-  </main>
-
-  <!-- SOCIO: MI PERFIL -->
-  <main class="content hidden page" id="socioPerfil">
-    <div class="page-header">
-      <h1 class="page-title">Mi perfil</h1>
-      <button class="btn btn-ghost btn-sm">✏️ Editar datos</button>
-    </div>
-    <div class="profile-grid">
-      <div class="profile-section">
-        <div class="profile-section-title">👤 Datos personales</div>
-        <div class="profile-field"><span class="field-label">Nombre</span><span class="field-value" id="perfilNombre">—</span></div>
-        <div class="profile-field"><span class="field-label">Email</span><span class="field-value" id="perfilEmail">—</span></div>
-        <div class="profile-field"><span class="field-label">Teléfono</span><span class="field-value" id="perfilTelefono">—</span></div>
-        <div class="profile-field"><span class="field-label">DNI</span><span class="field-value" id="perfilDni">—</span></div>
-      </div>
-      <div class="profile-section">
-        <div class="profile-section-title">💳 Mi membresía</div>
-        <div id="perfilMembresia"></div>
-      </div>
-    </div>
-  </main>
-
-  <!-- ════════════════════════════════════════
-       PÁGINAS PERSONAL
-  ════════════════════════════════════════ -->
-
-  <!-- PERSONAL: DASHBOARD -->
-  <main class="content page" id="personalDashboard">
-    <div class="page-header">
-      <h1 class="page-title">Dashboard</h1>
-      <span style="font-size:.8rem;color:var(--text-2);font-family:var(--mono)" id="dashFecha"></span>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon green">👥</div>
-        <div><div class="stat-value" id="statSocios">—</div><div class="stat-label">Socios activos</div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon orange">⏰</div>
-        <div><div class="stat-value" id="statMembVencer">—</div><div class="stat-label">Membresías por vencer</div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon blue">🏃</div>
-        <div><div class="stat-value" id="statClasesHoy">—</div><div class="stat-label">Clases hoy</div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon purple">📈</div>
-        <div><div class="stat-value" id="statOcupacion">—</div><div class="stat-label">Ocupación media</div></div>
-      </div>
-    </div>
-    <div class="charts-row">
-      <div class="chart-card">
-        <div class="chart-title">Ocupación por clase (hoy)</div>
-        <div class="chart-wrap"><canvas id="chartOcupacion"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Socios por tipo de cuota</div>
-        <div class="chart-wrap"><canvas id="chartCuotas"></canvas></div>
-      </div>
-    </div>
-    <div class="table-wrap">
-      <div class="table-header">
-        <span class="table-title">⚠️ Membresías próximas a vencer</span>
-      </div>
-      <table>
-        <thead><tr><th>Nombre</th><th>Cuota</th><th>Fecha fin</th><th>Días restantes</th></tr></thead>
-        <tbody id="tbodyVencer"></tbody>
-      </table>
-    </div>
-  </main>
-
-  <!-- PERSONAL: SOCIOS -->
-  <main class="content hidden page" id="personalSocios">
-    <div class="page-header">
-      <h1 class="page-title">Gestión de socios</h1>
-      <button class="btn btn-primary btn-sm">+ Nuevo socio</button>
-    </div>
-    <div class="table-wrap">
-      <div class="table-header">
-        <div class="search-wrap">
-          <input type="text" placeholder="Buscar por nombre o email..." oninput="filtrarSocios(this.value)" id="searchSocios">
-        </div>
-        <select class="filter-select" onchange="filtrarSocioEstado(this.value)">
-          <option value="">Todos</option>
-          <option value="Activo">Activos</option>
-          <option value="Inactivo">Inactivos</option>
+    <!-- SOCIO: CLASES -->
+    <main class="content hidden page" id="socioClases">
+      <div class="page-header"><h1 class="page-title">Clases disponibles</h1></div>
+      <div class="filters">
+        <input type="date" id="filtroFechaSocio">
+        <select class="filter-select" id="filtroTipoSocio" onchange="renderSocioClases()">
+          <option value="">Todos los tipos</option>
+          <option>Yoga</option><option>HIIT</option><option>Spinning</option>
+          <option>Pilates</option><option>Fuerza</option><option>Baile</option><option>Crossfit</option>
+        </select>
+        <select class="filter-select" id="filtroMonitorSocio" onchange="renderSocioClases()">
+          <option value="">Todos los monitores</option>
         </select>
       </div>
-      <table>
-        <thead><tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Membresía</th><th>Estado</th><th>Acción</th></tr></thead>
-        <tbody id="tbodySocios"></tbody>
-      </table>
-    </div>
-  </main>
+      <div class="classes-grid" id="gridSocioClases"></div>
+    </main>
 
-  <!-- PERSONAL: CLASES -->
-  <main class="content hidden page" id="personalClases">
-    <div class="page-header">
-      <h1 class="page-title">Gestión de clases</h1>
-      <button class="btn btn-primary btn-sm">+ Nueva clase</button>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Nombre</th><th>Tipo</th><th>Día / Hora</th><th>Capacidad</th><th>Monitor</th><th>Estado</th><th>Acciones</th></tr></thead>
-        <tbody id="tbodyClases"></tbody>
-      </table>
-    </div>
-  </main>
+    <!-- SOCIO: MIS RESERVAS -->
+    <main class="content hidden page" id="socioReservas">
+      <div class="page-header"><h1 class="page-title">Mis reservas</h1></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Clase</th><th>Fecha</th><th>Hora</th><th>Monitor</th><th>Estado</th><th>Acción</th></tr></thead>
+          <tbody id="tbodySocioReservas"><tr class="loading-row"><td colspan="6"><span class="spinner"></span>Cargando...</td></tr></tbody>
+        </table>
+      </div>
+    </main>
 
-  <!-- PERSONAL: RESERVAS -->
-  <main class="content hidden page" id="personalReservas">
-    <div class="page-header">
-      <h1 class="page-title">Reservas y asistencia</h1>
-    </div>
-    <div class="filters">
-      <input type="date" id="filtroFechaReservas">
-      <select class="filter-select" id="filtroClaseReservas" onchange="renderPersonalReservas()">
-        <option value="">Todas las clases</option>
-      </select>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Socio</th><th>Clase</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Asistida</th></tr></thead>
-        <tbody id="tbodyReservas"></tbody>
-      </table>
-    </div>
-    <div style="padding:1rem 1.5rem;border-top:1px solid var(--border)">
-      <button class="btn btn-primary btn-sm" onclick="guardarAsistencia()">💾 Guardar asistencia</button>
-    </div>
-  </main>
+    <!-- SOCIO: MI PERFIL -->
+    <main class="content hidden page" id="socioPerfil">
+      <div class="page-header"><h1 class="page-title">Mi perfil</h1><button class="btn btn-ghost btn-sm">✏️ Editar datos</button></div>
+      <div class="profile-grid">
+        <div class="profile-section">
+          <div class="profile-section-title">👤 Datos personales</div>
+          <div class="profile-field"><span class="field-label">Nombre</span><span class="field-value" id="perfilNombre"><span class="spinner"></span></span></div>
+          <div class="profile-field"><span class="field-label">Email</span><span class="field-value" id="perfilEmail">—</span></div>
+          <div class="profile-field"><span class="field-label">Teléfono</span><span class="field-value" id="perfilTelefono">—</span></div>
+          <div class="profile-field"><span class="field-label">DNI</span><span class="field-value" id="perfilDni">—</span></div>
+        </div>
+        <div class="profile-section">
+          <div class="profile-section-title">💳 Mi membresía</div>
+          <div id="perfilMembresia"><div style="color:var(--text-2);font-size:.875rem"><span class="spinner"></span>Cargando...</div></div>
+        </div>
+      </div>
+    </main>
 
-</div><!-- /.app -->
+    <!-- PERSONAL: DASHBOARD -->
+    <main class="content hidden page" id="personalDashboard">
+      <div class="page-header">
+        <h1 class="page-title">Dashboard</h1>
+        <span style="font-size:.8rem;color:var(--text-2);font-family:var(--mono)" id="dashFecha"></span>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon green">👥</div><div><div class="stat-value" id="statSocios">—</div><div class="stat-label">Socios activos</div></div></div>
+        <div class="stat-card"><div class="stat-icon orange">⏰</div><div><div class="stat-value" id="statMembVencer">—</div><div class="stat-label">Membresías por vencer</div></div></div>
+        <div class="stat-card"><div class="stat-icon blue">🏃</div><div><div class="stat-value" id="statClasesHoy">—</div><div class="stat-label">Clases hoy</div></div></div>
+        <div class="stat-card"><div class="stat-icon purple">📈</div><div><div class="stat-value" id="statOcupacion">—</div><div class="stat-label">Ocupación media</div></div></div>
+      </div>
+      <div class="charts-row">
+        <div class="chart-card"><div class="chart-title">Ocupación por clase (hoy)</div><div class="chart-wrap"><canvas id="chartOcupacion"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Socios por tipo de cuota</div><div class="chart-wrap"><canvas id="chartCuotas"></canvas></div></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-header"><span class="table-title">⚠️ Membresías próximas a vencer</span></div>
+        <table><thead><tr><th>Nombre</th><th>Cuota</th><th>Fecha fin</th><th>Días restantes</th></tr></thead><tbody id="tbodyVencer"></tbody></table>
+      </div>
+    </main>
+
+    <!-- PERSONAL: SOCIOS -->
+    <main class="content hidden page" id="personalSocios">
+      <div class="page-header"><h1 class="page-title">Gestión de socios</h1><button class="btn btn-primary btn-sm">+ Nuevo socio</button></div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="search-wrap"><input type="text" placeholder="Buscar por nombre o email..." oninput="filtrarSocios(this.value)"></div>
+          <select class="filter-select" onchange="filtrarSocioEstado(this.value)">
+            <option value="">Todos</option><option value="Active">Activos</option><option value="Inactive">Inactivos</option>
+          </select>
+        </div>
+        <table>
+          <thead><tr><th>Nombre</th><th>Email</th><th>Membresía</th><th>Estado</th><th>Acción</th></tr></thead>
+          <tbody id="tbodySocios"><tr class="loading-row"><td colspan="5"><span class="spinner"></span>Cargando socios...</td></tr></tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- PERSONAL: CLASES -->
+    <main class="content hidden page" id="personalClases">
+      <div class="page-header"><h1 class="page-title">Gestión de clases</h1><button class="btn btn-primary btn-sm">+ Nueva clase</button></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Nombre</th><th>Tipo</th><th>Día / Hora</th><th>Capacidad</th><th>Monitor</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="tbodyClases"></tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- PERSONAL: RESERVAS -->
+    <main class="content hidden page" id="personalReservas">
+      <div class="page-header"><h1 class="page-title">Reservas y asistencia</h1></div>
+      <div class="filters">
+        <input type="date" id="filtroFechaReservas">
+        <select class="filter-select" id="filtroClaseReservas" onchange="renderPersonalReservas()"><option value="">Todas las clases</option></select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Socio</th><th>Clase</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Asistida</th></tr></thead>
+          <tbody id="tbodyReservas"></tbody>
+        </table>
+      </div>
+      <div style="padding:1rem 1.5rem;border-top:1px solid var(--border)">
+        <button class="btn btn-primary btn-sm" onclick="guardarAsistencia()">💾 Guardar asistencia</button>
+      </div>
+    </main>
+
+  </div>
+</div>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-// CONFIGURACIÓN DE ENDPOINTS SALESFORCE
-// Cuando conectes con Salesforce, reemplaza las funciones
-// fetchXxx() con llamadas reales a /.netlify/functions/salesforce
-// ═══════════════════════════════════════════════════════════
-
-const API = {
-  getSocios:       () => fetchSF({ action: 'query', tipo: 'contactos' }),
-  getPerfilSocio:  () => fetchSF({ action: 'query', tipo: 'perfilSocio' }),
-  getReservasSocio:() => fetchSF({ action: 'query', tipo: 'reservasSocio' }),
-  cancelarReserva: (nombre, fecha) => fetchSF({ action: 'query', tipo: 'cancelarReserva', nombre, fecha }),
+// ═══════════════════════════════════════════════
+// CREDENCIALES
+// Para cambiar emails o contraseña editar aquí
+// ═══════════════════════════════════════════════
+const CREDENTIALS = {
+  'admin@admin.com':     { password: 'apex1234', role: 'personal' },
+  'usuario@usuario.com': { password: 'apex1234', role: 'socio'    },
 }
 
-// Función base para llamar a Netlify Function
+let currentRole = null
+let sociosTodos = []
+let sociosFiltrados = []
+
+// ═══════════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════════
+function doLogin() {
+  const email    = document.getElementById('loginEmail').value.trim().toLowerCase()
+  const pass     = document.getElementById('loginPass').value
+  const errorEl  = document.getElementById('loginError')
+  const errorMsg = document.getElementById('loginErrorMsg')
+
+  errorEl.classList.remove('show')
+  document.getElementById('loginEmail').classList.remove('error')
+  document.getElementById('loginPass').classList.remove('error')
+
+  const user = CREDENTIALS[email]
+
+  if (!user) {
+    errorMsg.textContent = 'No existe ninguna cuenta con ese email'
+    errorEl.classList.add('show')
+    document.getElementById('loginEmail').classList.add('error')
+    return
+  }
+  if (user.password !== pass) {
+    errorMsg.textContent = 'Contraseña incorrecta'
+    errorEl.classList.add('show')
+    document.getElementById('loginPass').classList.add('error')
+    return
+  }
+
+  currentRole = user.role
+
+  // Actualizar header
+  document.getElementById('headerEmail').textContent = email
+  const badge = document.getElementById('headerRoleBadge')
+  badge.textContent = user.role === 'personal' ? 'Personal' : 'Socio'
+  badge.className = `user-role-badge ${user.role}`
+
+  // Cambiar vista
+  document.getElementById('loginPage').style.display = 'none'
+  document.getElementById('appPage').style.display = 'flex'
+
+  // Mostrar sidebar correcto
+  document.getElementById('sidebarSocio').classList.toggle('hidden', user.role !== 'socio')
+  document.getElementById('sidebarPersonal').classList.toggle('hidden', user.role !== 'personal')
+
+  // Navegar a primera página del rol
+  if (user.role === 'socio') {
+    navTo('socioClases', document.querySelector('#sidebarSocio .nav-item'))
+  } else {
+    navTo('personalDashboard', document.querySelector('#sidebarPersonal .nav-item'))
+  }
+}
+
+// ═══════════════════════════════════════════════
+// LOGOUT
+// ═══════════════════════════════════════════════
+function doLogout() {
+  document.getElementById('loginEmail').value = ''
+  document.getElementById('loginPass').value = ''
+  document.getElementById('loginError').classList.remove('show')
+  document.getElementById('loginEmail').classList.remove('error')
+  document.getElementById('loginPass').classList.remove('error')
+  document.getElementById('appPage').style.display = 'none'
+  document.getElementById('loginPage').style.display = 'flex'
+  currentRole = null
+  sociosTodos = []
+  sociosFiltrados = []
+}
+
+// Enter para login
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('loginEmail').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginPass').focus() })
+  document.getElementById('loginPass').addEventListener('keydown',  e => { if (e.key === 'Enter') doLogin() })
+})
+
+// ═══════════════════════════════════════════════
+// SALESFORCE API
+// ═══════════════════════════════════════════════
 async function fetchSF(payload) {
   const res = await fetch('/.netlify/functions/salesforce', {
     method: 'POST',
@@ -434,10 +446,20 @@ async function fetchSF(payload) {
   return await res.json()
 }
 
-// ═══════════════════════════════════════════════════════════
-// DATOS MOCK (reemplazar con llamadas reales a API.xxx())
-// ═══════════════════════════════════════════════════════════
+const API = {
+  getSocios:        () => fetchSF({ action: 'query', tipo: 'contactos' }),
+  getPerfilSocio:   () => fetchSF({ action: 'query', tipo: 'perfilSocio' }),
+  getReservasSocio: () => fetchSF({ action: 'query', tipo: 'reservasSocio' }),
+  cancelarReserva:  (nombre, fecha) => fetchSF({ action: 'query', tipo: 'cancelarReserva', nombre, fecha }),
+  // TODO: getClases            → fetchSF({ action: 'query', tipo: 'clases' })
+  // TODO: getReservasPersonal  → fetchSF({ action: 'query', tipo: 'reservasPersonal' })
+  // TODO: getDashboard         → fetchSF({ action: 'query', tipo: 'dashboard' })
+  // TODO: guardarAsistencia    → fetchSF({ action: 'query', tipo: 'guardarAsistencia', reservas })
+}
 
+// ═══════════════════════════════════════════════
+// MOCK (secciones sin endpoint aún)
+// ═══════════════════════════════════════════════
 const MOCK = {
   clases: [
     {id:'c1',nombre:'Yoga Flow',tipo:'Yoga',fecha:'2026-02-27',hora:'09:00',monitor:'María López',inscritos:15,capacidad:20,activa:true},
@@ -448,25 +470,6 @@ const MOCK = {
     {id:'c6',nombre:'Zumba',tipo:'Baile',fecha:'2026-02-28',hora:'18:00',monitor:'María López',inscritos:28,capacidad:30,activa:true},
     {id:'c7',nombre:'Crossfit WOD',tipo:'Crossfit',fecha:'2026-02-28',hora:'07:00',monitor:'Pedro Gómez',inscritos:8,capacidad:15,activa:true},
     {id:'c8',nombre:'Stretching',tipo:'Yoga',fecha:'2026-03-01',hora:'19:00',monitor:'Carmen Ruiz',inscritos:5,capacidad:20,activa:false},
-  ],
-  reservasSocio: [
-    {id:'r1',claseId:'c1',clase:'Yoga Flow',fecha:'2026-02-27',hora:'09:00',monitor:'María López',estado:'Reservada'},
-    {id:'r2',claseId:'c3',clase:'Ciclo Indoor',fecha:'2026-02-27',hora:'17:00',monitor:'Laura Fernández',estado:'Reservada'},
-    {id:'r3',claseId:'c6',clase:'Zumba',fecha:'2026-02-28',hora:'18:00',monitor:'María López',estado:'Cancelada'},
-  ],
-  perfil: {
-    nombre:'Carlos García',email:'carlos@email.com',telefono:'612345678',dni:'12345678A',
-    membresia:{tipo:'Anual',inicio:'2025-01-15',fin:'2026-01-15',estado:'Activa',precio:'€599/año'}
-  },
-  socios: [
-    {id:'s1',nombre:'Carlos García',email:'carlos@email.com',telefono:'612345678',membresia:'Anual',estado:'Activo'},
-    {id:'s2',nombre:'Laura Martínez',email:'laura@email.com',telefono:'623456789',membresia:'Mensual',estado:'Activo'},
-    {id:'s3',nombre:'Miguel Torres',email:'miguel@email.com',telefono:'634567890',membresia:'Trimestral',estado:'Activo'},
-    {id:'s4',nombre:'Ana Ruiz',email:'ana@email.com',telefono:'645678901',membresia:'Mensual',estado:'Inactivo'},
-    {id:'s5',nombre:'Pedro López',email:'pedro@email.com',telefono:'656789012',membresia:'Anual',estado:'Activo'},
-    {id:'s6',nombre:'Sofía Hernández',email:'sofia@email.com',telefono:'667890123',membresia:'Trimestral',estado:'Activo'},
-    {id:'s7',nombre:'Javier Moreno',email:'javier@email.com',telefono:'678901234',membresia:'Mensual',estado:'Activo'},
-    {id:'s8',nombre:'Elena Díaz',email:'elena@email.com',telefono:'689012345',membresia:'Anual',estado:'Inactivo'},
   ],
   reservasPersonal: [
     {id:'rp1',socio:'Carlos García',clase:'Yoga Flow',fecha:'2026-02-27',hora:'09:00',estado:'Reservada',asistida:false},
@@ -483,109 +486,60 @@ const MOCK = {
   ]
 }
 
-// ═══════════════════════════════════════════════════════════
-// ESTADO
-// ═══════════════════════════════════════════════════════════
-let currentRole = 'personal'
-let currentPage = 'personalDashboard'
-let sociosFiltrados = [...MOCK.socios]
-
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // NAVEGACIÓN
-// ═══════════════════════════════════════════════════════════
-function setRole(role) {
-  currentRole = role
-  document.getElementById('btnSocio').classList.toggle('active', role === 'socio')
-  document.getElementById('btnPersonal').classList.toggle('active', role === 'personal')
-  document.getElementById('sidebarSocio').style.display = role === 'socio' ? 'flex' : 'none'
-  document.getElementById('sidebarPersonal').style.display = role === 'personal' ? 'flex' : 'none'
-
-  if (role === 'socio') {
-    navTo('socioClases', document.querySelector('#sidebarSocio .nav-item'))
-  } else {
-    navTo('personalDashboard', document.querySelector('#sidebarPersonal .nav-item'))
-  }
-}
-
+// ═══════════════════════════════════════════════
 function navTo(pageId, el) {
-  // Ocultar todas las páginas
   document.querySelectorAll('main.content').forEach(p => p.classList.add('hidden'))
-  // Mostrar la página seleccionada
   document.getElementById(pageId).classList.remove('hidden')
-  currentPage = pageId
-
-  // Actualizar nav activo
   const role = el ? el.dataset.role : currentRole
   document.querySelectorAll(`.nav-item[data-role="${role}"]`).forEach(n => n.classList.remove('active'))
   if (el) el.classList.add('active')
-
-  // Renderizar página
   renderPage(pageId)
 }
 
 function renderPage(pageId) {
   switch(pageId) {
-    case 'socioClases': renderSocioClases(); break
-    case 'socioReservas': renderSocioReservas(); break
-    case 'socioPerfil': renderSocioPerfil(); break
+    case 'socioClases':       renderSocioClases(); break
+    case 'socioReservas':     renderSocioReservas(); break
+    case 'socioPerfil':       renderSocioPerfil(); break
     case 'personalDashboard': renderDashboard(); break
-    case 'personalSocios': renderPersonalSocios(); break
-    case 'personalClases': renderPersonalClases(); break
-    case 'personalReservas': renderPersonalReservas(); break
+    case 'personalSocios':    renderPersonalSocios(); break
+    case 'personalClases':    renderPersonalClases(); break
+    case 'personalReservas':  renderPersonalReservas(); break
   }
 }
 
-// ═══════════════════════════════════════════════════════════
-// RENDER: SOCIO CLASES
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// SOCIO: CLASES (mock)
+// ═══════════════════════════════════════════════
 function renderSocioClases() {
-  // TODO: const data = await API.getClases()
   const data = MOCK.clases
-
-  // Poblar filtro monitores
-  const monitores = [...new Set(data.map(c => c.monitor))]
   const selMonitor = document.getElementById('filtroMonitorSocio')
   if (selMonitor.options.length <= 1) {
-    monitores.forEach(m => {
-      const o = document.createElement('option'); o.value = m; o.textContent = m
-      selMonitor.appendChild(o)
+    [...new Set(data.map(c => c.monitor))].forEach(m => {
+      const o = document.createElement('option'); o.value = m; o.textContent = m; selMonitor.appendChild(o)
     })
   }
-
-  const tipoFiltro = document.getElementById('filtroTipoSocio').value
+  const tipoFiltro    = document.getElementById('filtroTipoSocio').value
   const monitorFiltro = document.getElementById('filtroMonitorSocio').value
-  const filtered = data.filter(c =>
-    (!tipoFiltro || c.tipo === tipoFiltro) &&
-    (!monitorFiltro || c.monitor === monitorFiltro) &&
-    c.activa
-  )
-
-  const grid = document.getElementById('gridSocioClases')
-  grid.innerHTML = filtered.map(c => {
+  const filtered = data.filter(c => (!tipoFiltro || c.tipo === tipoFiltro) && (!monitorFiltro || c.monitor === monitorFiltro) && c.activa)
+  document.getElementById('gridSocioClases').innerHTML = filtered.map(c => {
     const pct = Math.round(c.inscritos / c.capacidad * 100)
     const full = c.inscritos >= c.capacidad
     const near = pct >= 80
-    return `
-    <div class="class-card">
+    return `<div class="class-card">
       <div class="class-card-header">
-        <div>
-          <div class="class-name">${c.nombre}</div>
-          <span class="class-type">${c.tipo}</span>
-        </div>
-        ${full
-          ? '<span class="badge badge-red">Completo</span>'
-          : `<span class="badge badge-green">${c.capacidad - c.inscritos} plazas</span>`}
+        <div><div class="class-name">${c.nombre}</div><span class="class-type">${c.tipo}</span></div>
+        ${full ? '<span class="badge badge-red">Completo</span>' : `<span class="badge badge-green">${c.capacidad - c.inscritos} plazas</span>`}
       </div>
       <div class="class-meta">
         <div class="class-meta-row"><span>🕐</span>${c.fecha} · ${c.hora}</div>
         <div class="class-meta-row"><span>👤</span>${c.monitor}</div>
         <div class="class-meta-row"><span>👥</span>${c.inscritos}/${c.capacidad}</div>
       </div>
-      <div class="capacity-bar">
-        <div class="capacity-fill ${full?'full':near?'near':''}" style="width:${pct}%"></div>
-      </div>
-      <button class="btn btn-primary" style="width:100%" ${full ? 'disabled style="opacity:.5;cursor:not-allowed"' : ''}
-        onclick="reservarClase('${c.id}')">
+      <div class="capacity-bar"><div class="capacity-fill ${full?'full':near?'near':''}" style="width:${pct}%"></div></div>
+      <button class="btn btn-primary" style="width:100%" ${full?'disabled':''} onclick="reservarClase('${c.id}')">
         ${full ? 'Sin plazas' : 'Reservar'}
       </button>
     </div>`
@@ -593,37 +547,39 @@ function renderSocioClases() {
 }
 
 function reservarClase(claseId) {
-  // TODO: await API.crearReserva(claseId, SOCIO_ID_ACTUAL)
-  alert(`Reserva creada para la clase ${claseId} ✅\n(Conectar con Salesforce para hacer la reserva real)`)
+  alert('Reserva creada ✅\n(Conectar endpoint cuando esté listo)')
 }
 
-// ═══════════════════════════════════════════════════════════
-// RENDER: SOCIO MIS RESERVAS
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// SOCIO: MIS RESERVAS — GET /me/bookings
+// ═══════════════════════════════════════════════
 async function renderSocioReservas() {
   const tbody = document.getElementById('tbodySocioReservas')
-  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-2)">Cargando...</td></tr>'
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="6"><span class="spinner"></span>Cargando reservas...</td></tr>'
   try {
     const data = await API.getReservasSocio()
-    if (data.error) { tbody.innerHTML = `<tr><td colspan="6" style="color:var(--danger);padding:1rem">⚠️ ${data.error}</td></tr>`; return }
+    if (data.error) { tbody.innerHTML = `<tr class="error-row"><td colspan="6">⚠️ ${data.error}</td></tr>`; return }
     const records = data.records || []
-    if (!records.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-2)">No tienes reservas.</td></tr>'; return }
+    if (!records.length) { tbody.innerHTML = '<tr class="loading-row"><td colspan="6">No tienes reservas actualmente.</td></tr>'; return }
     tbody.innerHTML = records.map(r => `
       <tr>
         <td><strong>${r.Clase||r.clase||'—'}</strong></td>
         <td>${r.Fecha||r.fecha||'—'}</td>
-        <td>${r.Hora||r.hora||'—'}</td>
+        <td style="font-family:var(--mono)">${r.Hora||r.hora||'—'}</td>
         <td>${r.Monitor||r.monitor||'—'}</td>
         <td>${badgeEstado(r.Estado||r.estado)}</td>
-        <td>${(r.Estado||r.estado)==='reserved'
-          ? `<button class="btn btn-ghost btn-sm" onclick="cancelarReserva(this,'${r.Clase||r.clase}','${r.Fecha||r.fecha}')">Cancelar</button>`
+        <td>${(r.Estado||r.estado) === 'reserved'
+          ? `<button class="btn-danger-ghost" onclick="cancelarReserva(this,'${r.Clase||r.clase}','${r.Fecha||r.fecha}')">Cancelar</button>`
           : '—'}</td>
       </tr>`).join('')
   } catch(e) {
-    tbody.innerHTML = `<tr><td colspan="6" style="color:var(--danger);padding:1rem">⚠️ Error: ${e.message}</td></tr>`
+    tbody.innerHTML = `<tr class="error-row"><td colspan="6">⚠️ Error: ${e.message}</td></tr>`
   }
 }
 
+// ═══════════════════════════════════════════════
+// CANCELAR RESERVA — POST /cancelSession
+// ═══════════════════════════════════════════════
 async function cancelarReserva(btn, nombre, fecha) {
   if (!confirm(`¿Cancelar "${nombre}" del ${fecha}?`)) return
   btn.disabled = true; btn.textContent = 'Cancelando...'
@@ -636,190 +592,105 @@ async function cancelarReserva(btn, nombre, fecha) {
   } catch(e) { alert('Error: ' + e.message); btn.disabled = false; btn.textContent = 'Cancelar' }
 }
 
-// ═══════════════════════════════════════════════════════════
-// RENDER: SOCIO PERFIL
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// SOCIO: MI PERFIL — GET /getContact/Me
+// ═══════════════════════════════════════════════
 async function renderSocioPerfil() {
   document.getElementById('perfilNombre').innerHTML = '<span class="spinner"></span>'
   document.getElementById('perfilEmail').textContent = '—'
   document.getElementById('perfilTelefono').textContent = '—'
   document.getElementById('perfilDni').textContent = '—'
   document.getElementById('perfilMembresia').innerHTML = '<div style="color:var(--text-2);font-size:.875rem"><span class="spinner"></span>Cargando...</div>'
-
   try {
     const data = await API.getPerfilSocio()
-
-    if (data.error) {
-      document.getElementById('perfilNombre').textContent = '⚠️ ' + data.error
-      document.getElementById('perfilMembresia').innerHTML = ''
-      return
-    }
-
-    // La respuesta viene en records[0].contact
+    if (data.error) { document.getElementById('perfilNombre').textContent = '⚠️ ' + data.error; document.getElementById('perfilMembresia').innerHTML = ''; return }
     const p = data.records?.[0]?.contact || data.records?.[0] || data
-
     document.getElementById('perfilNombre').textContent    = p.Name     || '—'
     document.getElementById('perfilEmail').textContent     = p.Email    || '—'
     document.getElementById('perfilTelefono').textContent  = p.Telefono || '—'
     document.getElementById('perfilDni').textContent       = p.DNI      || p.dni || '—'
-
     document.getElementById('perfilMembresia').innerHTML = `
-      <div class="membership-row"><span class="membership-key">Tipo</span><strong>${p.Membresia || '—'}</strong></div>
-      <div class="membership-row"><span class="membership-key">Precio</span><span>${p.membresiaPrecio ? '€' + p.membresiaPrecio + '/año' : '—'}</span></div>
-      <div class="membership-row"><span class="membership-key">Inicio</span><span>${p.membresiaStartDate || '—'}</span></div>
-      <div class="membership-row"><span class="membership-key">Fin</span><span>${p.membresiaEndDate || '—'}</span></div>
+      <div class="membership-row"><span class="membership-key">Tipo</span><strong>${p.Membresia||'—'}</strong></div>
+      <div class="membership-row"><span class="membership-key">Precio</span><span>${p.membresiaPrecio ? '€'+p.membresiaPrecio : '—'}</span></div>
+      <div class="membership-row"><span class="membership-key">Inicio</span><span>${p.membresiaStartDate||'—'}</span></div>
+      <div class="membership-row"><span class="membership-key">Fin</span><span>${p.membresiaEndDate||'—'}</span></div>
       <div class="membership-row"><span class="membership-key">Estado</span>${badgeEstado(p.Status)}</div>`
-
-  } catch(e) {
-    document.getElementById('perfilNombre').textContent = '⚠️ Error: ' + e.message
-    document.getElementById('perfilMembresia').innerHTML = ''
-  }
+  } catch(e) { document.getElementById('perfilNombre').textContent = '⚠️ Error: ' + e.message; document.getElementById('perfilMembresia').innerHTML = '' }
 }
-// ═══════════════════════════════════════════════════════════
-// RENDER: DASHBOARD
-// ═══════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════
+// PERSONAL: DASHBOARD (mock)
+// ═══════════════════════════════════════════════
 let chartOcup = null, chartCuota = null
 
 function renderDashboard() {
-  // TODO: const data = await API.getDashboard()
-  const hoy = new Date().toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
-  document.getElementById('dashFecha').textContent = hoy
-
-  const sociosActivos = MOCK.socios.filter(s => s.estado === 'Activo').length
-  const clasesHoy = MOCK.clases.filter(c => c.activa).length
-  const ocupMedia = Math.round(MOCK.clases.reduce((a,c) => a + c.inscritos/c.capacidad*100, 0) / MOCK.clases.length)
-
-  document.getElementById('statSocios').textContent = sociosActivos
+  document.getElementById('dashFecha').textContent = new Date().toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
+  document.getElementById('statSocios').textContent = 6
   document.getElementById('statMembVencer').textContent = MOCK.vencer.length
-  document.getElementById('statClasesHoy').textContent = clasesHoy
-  document.getElementById('statOcupacion').textContent = ocupMedia + '%'
-
-  // Membresías por vencer
+  document.getElementById('statClasesHoy').textContent = MOCK.clases.filter(c => c.activa).length
+  document.getElementById('statOcupacion').textContent = Math.round(MOCK.clases.reduce((a,c) => a + c.inscritos/c.capacidad*100, 0) / MOCK.clases.length) + '%'
   document.getElementById('tbodyVencer').innerHTML = MOCK.vencer.map(v => `
-    <tr>
-      <td><strong>${v.nombre}</strong></td>
-      <td>${v.cuota}</td>
-      <td>${v.fechaFin}</td>
-      <td><span class="badge ${v.dias <= 3 ? 'badge-red' : 'badge-orange'}">${v.dias} días</span></td>
-    </tr>`).join('')
-
-  // Gráfico ocupación
-  const clasesHoyArr = MOCK.clases.filter(c => c.activa).slice(0,5)
+    <tr><td><strong>${v.nombre}</strong></td><td>${v.cuota}</td><td>${v.fechaFin}</td>
+    <td><span class="badge ${v.dias<=3?'badge-red':'badge-orange'}">${v.dias} días</span></td></tr>`).join('')
+  const ca = MOCK.clases.filter(c=>c.activa).slice(0,5)
   if (chartOcup) chartOcup.destroy()
-  chartOcup = new Chart(document.getElementById('chartOcupacion'), {
-    type: 'bar',
-    data: {
-      labels: clasesHoyArr.map(c => c.nombre),
-      datasets: [{
-        data: clasesHoyArr.map(c => Math.round(c.inscritos/c.capacidad*100)),
-        backgroundColor: clasesHoyArr.map(c => c.inscritos>=c.capacidad ? '#dc2626' : '#16a34a'),
-        borderRadius: 6,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { max: 100, ticks: { callback: v => v+'%', font: { size: 10 } }, grid: { color: '#f3f4f6' } },
-        x: { ticks: { font: { size: 10 } }, grid: { display: false } }
-      }
-    }
-  })
-
-  // Gráfico cuotas
-  const cuotas = {}
-  MOCK.socios.filter(s => s.estado === 'Activo').forEach(s => { cuotas[s.membresia] = (cuotas[s.membresia]||0)+1 })
+  chartOcup = new Chart(document.getElementById('chartOcupacion'),{type:'bar',data:{labels:ca.map(c=>c.nombre),datasets:[{data:ca.map(c=>Math.round(c.inscritos/c.capacidad*100)),backgroundColor:ca.map(c=>c.inscritos>=c.capacidad?'#dc2626':'#16a34a'),borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{max:100,ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'#f3f4f6'}},x:{ticks:{font:{size:10}},grid:{display:false}}}}})
   if (chartCuota) chartCuota.destroy()
-  chartCuota = new Chart(document.getElementById('chartCuotas'), {
-    type: 'pie',
-    data: {
-      labels: Object.keys(cuotas).map(k => `${k}: ${cuotas[k]}`),
-      datasets: [{
-        data: Object.values(cuotas),
-        backgroundColor: ['#16a34a','#2563eb','#d97706','#7c3aed'],
-        borderWidth: 2, borderColor: '#fff'
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'right', labels: { font: { size: 11 }, boxWidth: 12 } } }
-    }
-  })
+  chartCuota = new Chart(document.getElementById('chartCuotas'),{type:'pie',data:{labels:['Mensual: 3','Trimestral: 2','Anual: 3'],datasets:[{data:[3,2,3],backgroundColor:['#16a34a','#2563eb','#d97706'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},boxWidth:12}}}}})
 }
 
-// ═══════════════════════════════════════════════════════════
-// RENDER: PERSONAL SOCIOS
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// PERSONAL: SOCIOS — GET /getContacts/
+// ═══════════════════════════════════════════════
 async function renderPersonalSocios() {
   const tbody = document.getElementById('tbodySocios')
-  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-2)">Cargando...</td></tr>'
-
-  const res = await fetch('/.netlify/functions/salesforce', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'query', tipo: 'contactos' })
-  })
-  const data = await res.json()
-
-  if (data.error) {
-    tbody.innerHTML = `<tr><td colspan="5" style="color:var(--danger);padding:1rem">${data.error}</td></tr>`
-    return
-  }
-
-  sociosFiltrados = data.records || []
-  renderTablaSocios()
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="5"><span class="spinner"></span>Cargando socios...</td></tr>'
+  try {
+    const data = await API.getSocios()
+    if (data.error) { tbody.innerHTML = `<tr class="error-row"><td colspan="5">⚠️ ${data.error}</td></tr>`; return }
+    sociosTodos = data.records || []
+    sociosFiltrados = [...sociosTodos]
+    renderTablaSocios()
+  } catch(e) { tbody.innerHTML = `<tr class="error-row"><td colspan="5">⚠️ Error: ${e.message}</td></tr>` }
 }
 
 function renderTablaSocios() {
-  document.getElementById('tbodySocios').innerHTML = sociosFiltrados.map(s => `
+  const tbody = document.getElementById('tbodySocios')
+  if (!sociosFiltrados.length) { tbody.innerHTML = '<tr class="loading-row"><td colspan="5">No se encontraron socios.</td></tr>'; return }
+  tbody.innerHTML = sociosFiltrados.map(s => `
     <tr>
-      <td><strong>${s.Name || '—'}</strong></td>
-      <td style="color:var(--text-2)">${s.Email || '—'}</td>
-      <td><span class="badge badge-blue">${s.Membresia || '—'}</span></td>
-      <td>${s.Status === 'Active'
-        ? '<span class="badge badge-green">Activo</span>'
-        : '<span class="badge badge-gray">Inactivo</span>'}</td>
+      <td><strong>${s.Name||s.nombre||'—'}</strong></td>
+      <td style="color:var(--text-2)">${s.Email||s.email||'—'}</td>
+      <td><span class="badge badge-blue">${s.Membresia||s.membresia||'—'}</span></td>
+      <td>${['Active','Activo'].includes(s.Status||s.estado)?'<span class="badge badge-green">Activo</span>':'<span class="badge badge-gray">Inactivo</span>'}</td>
       <td><button class="btn btn-ghost btn-sm">Editar</button></td>
     </tr>`).join('')
 }
 
 function filtrarSocios(q) {
   const ql = q.toLowerCase()
-  sociosFiltrados = MOCK.socios.filter(s =>
-    (s.Name||'').toLowerCase().includes(ql) || (s.Email||'').toLowerCase().includes(ql)
-  )
+  sociosFiltrados = sociosTodos.filter(s => (s.Name||s.nombre||'').toLowerCase().includes(ql)||(s.Email||s.email||'').toLowerCase().includes(ql))
   renderTablaSocios()
 }
 
 function filtrarSocioEstado(estado) {
-  sociosFiltrados = estado ? MOCK.socios.filter(s => s.estado === estado) : [...MOCK.socios]
+  sociosFiltrados = estado ? sociosTodos.filter(s => (s.Status||s.estado) === estado) : [...sociosTodos]
   renderTablaSocios()
 }
 
-// ═══════════════════════════════════════════════════════════
-// RENDER: PERSONAL CLASES
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// PERSONAL: CLASES (mock)
+// ═══════════════════════════════════════════════
 function renderPersonalClases() {
-  // TODO: const data = await API.getClases()
   document.getElementById('tbodyClases').innerHTML = MOCK.clases.map(c => {
     const pct = Math.round(c.inscritos/c.capacidad*100)
-    return `
-    <tr>
+    return `<tr>
       <td><strong>${c.nombre}</strong></td>
       <td><span class="badge badge-blue">${c.tipo}</span></td>
       <td style="font-family:var(--mono);font-size:.8rem">${c.fecha} · ${c.hora}</td>
-      <td>
-        <div style="display:flex;align-items:center;gap:.5rem">
-          <span style="font-size:.85rem">${c.inscritos}/${c.capacidad}</span>
-          <div class="capacity-bar" style="width:60px">
-            <div class="capacity-fill ${pct>=100?'full':pct>=80?'near':''}" style="width:${pct}%"></div>
-          </div>
-        </div>
-      </td>
+      <td><div style="display:flex;align-items:center;gap:.5rem"><span>${c.inscritos}/${c.capacidad}</span><div class="capacity-bar" style="width:60px"><div class="capacity-fill ${pct>=100?'full':pct>=80?'near':''}" style="width:${pct}%"></div></div></div></td>
       <td>${c.monitor}</td>
-      <td>${c.activa
-        ? '<span class="badge badge-green">Activa</span>'
-        : '<span class="badge badge-gray">Inactiva</span>'}</td>
+      <td>${c.activa?'<span class="badge badge-green">Activa</span>':'<span class="badge badge-gray">Inactiva</span>'}</td>
       <td style="display:flex;align-items:center;gap:.75rem">
         <label class="toggle"><input type="checkbox" ${c.activa?'checked':''} onchange="toggleClase('${c.id}',this.checked)"><span class="toggle-slider"></span></label>
         <button class="btn btn-ghost btn-sm">✏️</button>
@@ -828,65 +699,42 @@ function renderPersonalClases() {
   }).join('')
 }
 
-function toggleClase(claseId, activa) {
-  // TODO: await API.updateClase(claseId, { activa })
-  console.log(`Clase ${claseId} → activa: ${activa}`)
-}
+function toggleClase(claseId, activa) { console.log(`Clase ${claseId} → activa: ${activa}`) }
 
-// ═══════════════════════════════════════════════════════════
-// RENDER: PERSONAL RESERVAS
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// PERSONAL: RESERVAS (mock)
+// ═══════════════════════════════════════════════
 function renderPersonalReservas() {
-  // TODO: const data = await API.getReservasPersonal()
   const data = MOCK.reservasPersonal
-
-  // Poblar filtro clases
-  const clases = [...new Set(data.map(r => r.clase))]
   const sel = document.getElementById('filtroClaseReservas')
-  if (sel.options.length <= 1) {
-    clases.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o) })
-  }
-
-  const claseFiltro = sel.value
-  const filtered = claseFiltro ? data.filter(r => r.clase === claseFiltro) : data
-
-  document.getElementById('tbodyReservas').innerHTML = filtered.map(r => `
+  if (sel.options.length <= 1) [...new Set(data.map(r=>r.clase))].forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o)})
+  const filtered = sel.value ? data.filter(r=>r.clase===sel.value) : data
+  document.getElementById('tbodyReservas').innerHTML = filtered.map(r=>`
     <tr>
-      <td><strong>${r.socio}</strong></td>
-      <td>${r.clase}</td>
-      <td>${r.fecha}</td>
+      <td><strong>${r.socio}</strong></td><td>${r.clase}</td><td>${r.fecha}</td>
       <td style="font-family:var(--mono)">${r.hora}</td>
       <td>${badgeEstado(r.estado)}</td>
-      <td style="text-align:center">
-        <input type="checkbox" ${r.asistida?'checked':''} data-id="${r.id}" ${r.estado==='Cancelada'?'disabled':''}>
-      </td>
+      <td style="text-align:center"><input type="checkbox" ${r.asistida?'checked':''} data-id="${r.id}" ${r.estado==='Cancelada'?'disabled':''}></td>
     </tr>`).join('')
 }
 
 function guardarAsistencia() {
   const checks = document.querySelectorAll('#tbodyReservas input[type="checkbox"]')
-  const reservas = [...checks].map(c => ({ id: c.dataset.id, asistida: c.checked }))
-  // TODO: await API.guardarAsistencia(reservas)
-  alert('Asistencia guardada ✅\n(Conectar con Salesforce para guardar de verdad)')
+  alert('Asistencia guardada ✅\n(Conectar endpoint cuando esté listo)')
 }
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // HELPERS
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 function badgeEstado(estado) {
   const map = {
-    'Reservada':'badge-green','Activa':'badge-green','Asistida':'badge-blue',
-    'Cancelada':'badge-red','Inactivo':'badge-gray','Inactiva':'badge-gray'
+    'Reservada':'badge-green','reserved':'badge-green','Activa':'badge-green','Active':'badge-green','Activo':'badge-green',
+    'Asistida':'badge-blue',
+    'Cancelada':'badge-red','cancelled':'badge-red',
+    'Inactivo':'badge-gray','Inactiva':'badge-gray','Inactive':'badge-gray'
   }
-  return `<span class="badge ${map[estado]||'badge-gray'}">${estado}</span>`
+  return `<span class="badge ${map[estado]||'badge-gray'}">${estado||'—'}</span>`
 }
-
-// ═══════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-  setRole('personal')
-})
 </script>
 </body>
 </html>
