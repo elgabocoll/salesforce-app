@@ -140,6 +140,17 @@ export const handler = async (event) => {
       getError:  (data) => data?.message || 'Error obteniendo reservas',
     },
 
+    // POST /services/apexrest/bookSession
+    // Body enviado a Apex: { Id }
+    bookSession: {
+      path:      '/services/apexrest/bookSession/',
+      method:    'POST',
+      bodyData:  { Id: body?.Id },
+      toRecords: () => [],
+      isOk:      (data) => !data?.errorCode || String(data?.errorCode) === '200' || String(data?.errorCode) === '409',
+      getError:  (data) => data?.message || 'Error al reservar sesión',
+    },
+
     // ── TODO: añadir más endpoints aquí ─────────────────────
     // dashboard: { path: '/services/apexrest/getDashboard', method: 'GET', ... },
   }
