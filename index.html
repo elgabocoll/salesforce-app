@@ -627,15 +627,18 @@ async function reservarClase(sessionId) {
   if (btn) { btn.disabled = true; btn.textContent = 'Reservando...' }
 
   try {
-    const data = await API.bookSession(sessionId)
+    const res = await fetchSF({ action: 'query', tipo: 'bookSession', Id: sessionId })
 
-    if (String(data?.errorCode) === '409' || data?.message?.toLowerCase().includes('already')) {
+    // La respuesta de Apex viene envuelta por el .mjs, leerla del raw
+    const errorCode = res?.raw?.errorCode || res?.errorCode
+    const message   = res?.raw?.message   || res?.message || res?.error
+
+    if (String(errorCode) === '409') {
       alert('⚠️ Ya estás inscrito en esta clase.')
-    } else if (data.error) {
-      alert('Error al reservar: ' + data.error)
+    } else if (res.error) {
+      alert('Error al reservar: ' + res.error)
     } else {
       alert('✅ ¡Reserva realizada con éxito!')
-      // Invalida el caché para que recargue las plazas actualizadas
       sessionesCache = []
       renderSocioClases()
       return
@@ -645,7 +648,6 @@ async function reservarClase(sessionId) {
     alert('Error de conexión: ' + e.message)
   }
 
-  // Restaurar botón si hubo error
   if (btn) { btn.disabled = false; btn.textContent = 'Reservar' }
 }
 
