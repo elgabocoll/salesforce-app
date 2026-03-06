@@ -79,9 +79,9 @@ export const handler = async (event) => {
       getError:  (data) => data?.message || 'Error obteniendo perfil',
     },
 
-    // GET /services/apexrest/me/bookings
+    // GET /services/apexrest/getBookings/me
     reservasSocio: {
-      path:      '/services/apexrest/me/bookings',
+      path:      '/services/apexrest/getBookings/me',
       method:    'GET',
       toRecords: (data) => data?.bookings ?? data?.records ?? (Array.isArray(data) ? data : []),
       isOk:      (data) => !data?.errorCode || String(data?.errorCode) === '200',
