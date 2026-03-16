@@ -362,7 +362,7 @@ input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:
 
     <!-- ══ PERSONAL: SOCIOS ══ -->
     <main class="content hidden page" id="personalSocios">
-      <div class="page-header"><h1 class="page-title">Gestión de socios</h1><button class="btn btn-primary btn-sm">+ Nuevo socio</button></div>
+      <div class="page-header"><h1 class="page-title">Gestión de socios</h1><button class="btn btn-primary btn-sm" onclick="openNuevoSocio()">+ Nuevo socio</button></div>
       <div class="table-wrap">
         <div class="table-header">
           <div class="search-wrap"><input type="text" placeholder="Buscar por nombre o email..." oninput="filtrarSocios(this.value)"></div>
@@ -398,7 +398,76 @@ input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:
         </table>
       </div>
     </main>
+<!-- MODAL NUEVO SOCIO -->
+<div class="modal-overlay" id="nuevoSocioOverlay" onclick="closeNuevoSocio(event)">
+  <div class="modal" style="max-width:480px">
+    <button class="modal-close" onclick="closeNuevoSocio()">✕</button>
+    <div class="modal-title">👤 Nuevo socio</div>
 
+    <div class="login-error" id="nuevoSocioError">
+      <span>⚠️</span><span id="nuevoSocioErrorMsg">Error</span>
+    </div>
+
+    <!-- Datos personales -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+      <div class="modal-field">
+        <label class="modal-label" for="nsFirstName">Nombre *</label>
+        <input class="modal-input" type="text" id="nsFirstName" placeholder="Gabriel">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label" for="nsLastName">Apellidos *</label>
+        <input class="modal-input" type="text" id="nsLastName" placeholder="García">
+      </div>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label" for="nsEmail">Email *</label>
+      <input class="modal-input" type="email" id="nsEmail" placeholder="socio@email.com">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label" for="nsPhone">Teléfono *</label>
+      <input class="modal-input" type="tel" id="nsPhone" placeholder="+34 600 000 000">
+    </div>
+
+    <!-- Membresía -->
+    <div style="border-top:1px solid var(--border);margin:.75rem 0 1rem;padding-top:1rem;font-size:.8rem;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em">Membresía</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+      <div class="modal-field">
+        <label class="modal-label" for="nsMembershipType">Tipo *</label>
+        <select class="modal-input filter-select" id="nsMembershipType" style="background:var(--bg)">
+          <option value="">Seleccionar...</option>
+          <option value="Monthly">Monthly</option>
+          <option value="Quarterly">Quarterly</option>
+          <option value="Annual">Annual</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label" for="nsMembershipState">Estado *</label>
+        <select class="modal-input filter-select" id="nsMembershipState" style="background:var(--bg)">
+          <option value="">Seleccionar...</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+      <div class="modal-field">
+        <label class="modal-label" for="nsMembershipStart">Fecha inicio *</label>
+        <input class="modal-input" type="date" id="nsMembershipStart">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label" for="nsMembershipEnd">Fecha fin *</label>
+        <input class="modal-input" type="date" id="nsMembershipEnd">
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeNuevoSocio()">Cancelar</button>
+      <button class="btn btn-primary btn-sm" id="nuevoSocioBtn" onclick="submitNuevoSocio()">Crear socio</button>
+    </div>
+  </div>
+</div>
+    
   </div>
 </div>
 
@@ -470,6 +539,87 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('loginPass').addEventListener('keydown',  e => { if (e.key==='Enter') doLogin() })
 })
 
+  // ═══════════════════════════════════════════════
+// MODAL NUEVO SOCIO
+// ═══════════════════════════════════════════════
+function openNuevoSocio() {
+  // Limpiar campos
+  ['nsFirstName','nsLastName','nsEmail','nsPhone',
+   'nsMembershipType','nsMembershipState','nsMembershipStart','nsMembershipEnd']
+    .forEach(id => document.getElementById(id).value = '')
+  document.getElementById('nuevoSocioError').classList.remove('show')
+  const btn = document.getElementById('nuevoSocioBtn')
+  btn.disabled = false
+  btn.textContent = 'Crear socio'
+  document.getElementById('nuevoSocioOverlay').classList.add('show')
+}
+
+function closeNuevoSocio(e) {
+  if (e && e.target !== document.getElementById('nuevoSocioOverlay')) return
+  document.getElementById('nuevoSocioOverlay').classList.remove('show')
+}
+
+async function submitNuevoSocio() {
+  const errorEl  = document.getElementById('nuevoSocioError')
+  const errorMsg = document.getElementById('nuevoSocioErrorMsg')
+  const btn      = document.getElementById('nuevoSocioBtn')
+
+  const data = {
+    firstName:           document.getElementById('nsFirstName').value.trim(),
+    lastName:            document.getElementById('nsLastName').value.trim(),
+    email:               document.getElementById('nsEmail').value.trim(),
+    phone:               document.getElementById('nsPhone').value.trim(),
+    membershipType:      document.getElementById('nsMembershipType').value,
+    membershipState:     document.getElementById('nsMembershipState').value,
+    membershipStartDate: document.getElementById('nsMembershipStart').value,
+    membershipEndDate:   document.getElementById('nsMembershipEnd').value,
+  }
+
+  // Validación — todos los campos son obligatorios
+  const empty = Object.values(data).some(v => !v)
+  if (empty) {
+    errorMsg.textContent = 'Todos los campos son obligatorios.'
+    errorEl.classList.add('show')
+    return
+  }
+
+  errorEl.classList.remove('show')
+  btn.disabled = true
+  btn.textContent = 'Creando...'
+
+  try {
+    const res = await API.createContact(data)
+
+    if (String(res?.raw?.errorCode) === '409') {
+      errorMsg.textContent = 'Ya existe un contacto con ese email.'
+      errorEl.classList.add('show')
+      btn.disabled = false
+      btn.textContent = 'Crear socio'
+      return
+    }
+
+    if (res.error) {
+      errorMsg.textContent = res.error
+      errorEl.classList.add('show')
+      btn.disabled = false
+      btn.textContent = 'Crear socio'
+      return
+    }
+
+    // Éxito: cerrar modal y recargar tabla
+    document.getElementById('nuevoSocioOverlay').classList.remove('show')
+    sociosTodos = []
+    sociosFiltrados = []
+    await renderPersonalSocios()
+
+  } catch(e) {
+    errorMsg.textContent = 'Error de conexión: ' + e.message
+    errorEl.classList.add('show')
+    btn.disabled = false
+    btn.textContent = 'Crear socio'
+  }
+}
+
 // ═══════════════════════════════════════════════
 // SALESFORCE API
 // ═══════════════════════════════════════════════
@@ -491,6 +641,7 @@ const API = {
   editSession:         (body) => fetchSF({ action: 'query', tipo: 'editSession', ...body }),
   getReservasPersonal: () => fetchSF({ action: 'query', tipo: 'reservasPersonal' }),
   bookSession: (id) => fetchSF({ action: 'query', tipo: 'bookSession', Id: id }),
+  createContact: (data) => fetchSF({ action: 'query', tipo: 'createContact', ...data }),
 }
 
 // ═══════════════════════════════════════════════
