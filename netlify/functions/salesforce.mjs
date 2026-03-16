@@ -150,6 +150,23 @@ export const handler = async (event) => {
       isOk: (data) => ['200', '409'].includes(String(data?.errorCode)),
       getError:  (data) => data?.message || 'Error al reservar sesión',
     },
+    createContact: {
+  path:      '/services/apexrest/createContact/',
+  method:    'POST',
+  bodyData:  {
+    firstName:           body?.firstName,
+    lastName:            body?.lastName,
+    email:               body?.email,
+    phone:               body?.phone,
+    membershipType:      body?.membershipType,
+    membershipState:     body?.membershipState,
+    membershipStartDate: body?.membershipStartDate,
+    membershipEndDate:   body?.membershipEndDate,
+  },
+  toRecords: () => [],
+  isOk:      (data) => ['200','409'].includes(String(data?.errorCode)),
+  getError:  (data) => data?.message || 'Error al crear contacto',
+},
 
     // ── TODO: añadir más endpoints aquí ─────────────────────
     // dashboard: { path: '/services/apexrest/getDashboard', method: 'GET', ... },
