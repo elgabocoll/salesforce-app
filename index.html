@@ -642,6 +642,7 @@ const API = {
   getReservasPersonal: () => fetchSF({ action: 'query', tipo: 'reservasPersonal' }),
   bookSession: (id) => fetchSF({ action: 'query', tipo: 'bookSession', Id: id }),
   createContact: (data) => fetchSF({ action: 'query', tipo: 'createContact', ...data }),
+  getDashboard: () => fetchSF({ action: 'query', tipo: 'dashboard' }),
 }
 
 // ═══════════════════════════════════════════════
@@ -872,19 +873,92 @@ async function renderSocioPerfil() {
 // ═══════════════════════════════════════════════
 let chartOcup = null, chartCuota = null
 
-function renderDashboard() {
+async function renderDashboard() {
   document.getElementById('dashFecha').textContent = new Date().toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
-  document.getElementById('statSocios').textContent = '—'
-  document.getElementById('statMembVencer').textContent = MOCK.vencer.length
-  document.getElementById('statClasesHoy').textContent = '—'
-  document.getElementById('statOcupacion').textContent = '—'
-  document.getElementById('tbodyVencer').innerHTML = MOCK.vencer.map(v => `
-    <tr><td><strong>${v.nombre}</strong></td><td>${v.cuota}</td><td>${v.fechaFin}</td>
-    <td><span class="badge ${v.dias<=3?'badge-red':'badge-orange'}">${v.dias} días</span></td></tr>`).join('')
-  if (chartOcup) chartOcup.destroy()
-  chartOcup = new Chart(document.getElementById('chartOcupacion'),{type:'bar',data:{labels:['Sin datos'],datasets:[{data:[0],backgroundColor:'#16a34a',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{max:100,ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'#f3f4f6'}},x:{ticks:{font:{size:10}},grid:{display:false}}}}})
-  if (chartCuota) chartCuota.destroy()
-  chartCuota = new Chart(document.getElementById('chartCuotas'),{type:'pie',data:{labels:['Mensual: 3','Trimestral: 2','Anual: 3'],datasets:[{data:[3,2,3],backgroundColor:['#16a34a','#2563eb','#d97706'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},boxWidth:12}}}}})
+
+  // Spinners mientras carga
+  ;['statSocios','statMembVencer','statClasesHoy','statOcupacion'].forEach(id => {
+    document.getElementById(id).innerHTML = '<span class="spinner"></span>'
+  })
+
+  try {
+    const res  = await API.getDashboard()
+    const d    = res.records?.[0]
+
+    if (!d || res.error) {
+      ;['statSocios','statMembVencer','statClasesHoy','statOcupacion'].forEach(id => {
+        document.getElementById(id).textContent = '—'
+      })
+      return
+    }
+
+    // ── Stats ──────────────────────────────────────────
+    document.getElementById('statSocios').textContent     = d.sociosActivos    ?? '—'
+    document.getElementById('statMembVencer').textContent = d.membresiasVencer ?? '—'
+    document.getElementById('statClasesHoy').textContent  = d.clasesHoy        ?? '—'
+    document.getElementById('statOcupacion').textContent  = (d.ocupacionMedia ?? '—') + '%'
+
+    // ── Tabla membresías por vencer ────────────────────
+    const vencer = d.vencer || []
+    document.getElementById('tbodyVencer').innerHTML = vencer.length
+      ? vencer.map(v => `
+          <tr>
+            <td><strong>${v.nombre}</strong></td>
+            <td>${v.cuota}</td>
+            <td>${v.fechaFin}</td>
+            <td><span class="badge ${v.dias <= 3 ? 'badge-red' : 'badge-orange'}">${v.dias} días</span></td>
+          </tr>`).join('')
+      : '<tr class="loading-row"><td colspan="4">No hay membresías próximas a vencer.</td></tr>'
+
+    // ── Gráfico ocupación por clase ────────────────────
+    const ocupacion = d.ocupacion || []
+    if (chartOcup) chartOcup.destroy()
+    chartOcup = new Chart(document.getElementById('chartOcupacion'), {
+      type: 'bar',
+      data: {
+        labels:   ocupacion.map(c => c.nombre),
+        datasets: [{
+          data:            ocupacion.map(c => c.capacidad > 0 ? Math.round(c.inscritos / c.capacidad * 100) : 0),
+          backgroundColor: ocupacion.map(c => c.inscritos >= c.capacidad ? '#dc2626' : '#16a34a'),
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { max: 100, ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: '#f3f4f6' } },
+          x: { ticks: { font: { size: 10 } }, grid: { display: false } }
+        }
+      }
+    })
+
+    // ── Gráfico socios por tipo de cuota ───────────────
+    const cuotas = d.cuotas || []
+    if (chartCuota) chartCuota.destroy()
+    chartCuota = new Chart(document.getElementById('chartCuotas'), {
+      type: 'pie',
+      data: {
+        labels:   cuotas.map(c => `${c.tipo}: ${c.cantidad}`),
+        datasets: [{
+          data:            cuotas.map(c => c.cantidad),
+          backgroundColor: ['#16a34a','#2563eb','#d97706','#7c3aed'],
+          borderWidth: 2,
+          borderColor: '#fff'
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'right', labels: { font: { size: 11 }, boxWidth: 12 } } }
+      }
+    })
+
+  } catch(e) {
+    ;['statSocios','statMembVencer','statClasesHoy','statOcupacion'].forEach(id => {
+      document.getElementById(id).textContent = '—'
+    })
+    console.error('Error dashboard:', e.message)
+  }
 }
 
 // ═══════════════════════════════════════════════
