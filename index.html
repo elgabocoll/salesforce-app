@@ -1416,9 +1416,7 @@ function badgeEstado(estado) {
         });
         let reply = '';
         if (response.ok) {
-          const data = await response.json();
-          // Puedes ajustar esto según la estructura de respuesta de tu webhook
-          reply = data.reply || data.message || JSON.stringify(data);
+          reply = await response.text();
         } else {
           reply = 'No se pudo contactar con el asistente.';
         }
