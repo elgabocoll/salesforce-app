@@ -1384,6 +1384,16 @@ function badgeEstado(estado) {
       var win = document.getElementById('chatbot-window');
       win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
     }
+    function getSessionId() {
+  let sessionId = localStorage.getItem("apexgym_session_id");
+
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    localStorage.setItem("apexgym_session_id", sessionId);
+  }
+
+  return sessionId;
+}
     async function sendChatbotMsg(e) {
       e.preventDefault();
       var input = document.getElementById('chatbotInput');
@@ -1412,7 +1422,10 @@ function badgeEstado(estado) {
         const response = await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: msg })
+         body: JSON.stringify({
+  message: msg,
+  sessionId: getSessionId()
+})
         });
         let reply = '';
         if (response.ok) {
